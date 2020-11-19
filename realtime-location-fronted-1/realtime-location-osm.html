@@ -27,6 +27,8 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/windycom/leaflet-kml@master/L.KML.js"
+            crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 </head>
 
@@ -80,12 +82,13 @@
         var map = L.map('map').setView([22.602265, 113.994955], 16);
 
         //Wkikmedia maps tile
-
-        L.tileLayer('https://maps.cra.moe/osm-intl/{z}/{x}/{y}@2x.png', {
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://windytiles.mapy.cz/turist-en/{z}-{x}-{y}.png
+        L.tileLayer('https://maps.cra.moe/{z}/{x}/{y}.png', {
  //           maxZoom: 20,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                'BUS Data SUSTech CSOffice</a>',
+                'Bus data: SUSTech CS Office</a>',
 //            id: 'mapbox/light-v9',
 //            tileSize: 512,
 //            zoomOffset: -1
@@ -102,14 +105,14 @@
             //       shadowAnchor: [4, 62],  // the same for the shadow
             popupAnchor: [-3, -30] // point from which the popup should open relative to the iconAnchor
         });
-
+    //location
         map.locate({setView: true, maxZoom: 20});
 
         function onLocationFound(e) {
             var radius = e.accuracy;
 
             L.marker(e.latlng).addTo(map)
-                .bindPopup("You are within " + radius + " meters from this point").openPopup();
+                .bindPopup("Your location. Accuracy: " + radius).openPopup();
 
             L.circle(e.latlng, radius).addTo(map);
         }
@@ -121,7 +124,22 @@
         }
 
         map.on('locationerror', onLocationError);
+        //draw bus route
+        // Load kml file
+        fetch('bus-route.kml')
+            .then(res => res.text())
+            .then(kmltext => {
+                // Create new kml overlay
+                const parser = new DOMParser();
+                const kml = parser.parseFromString(kmltext, 'text/xml');
+                const track = new L.KML(kml);
+                map.addLayer(track);
 
+                // Adjust map to show the kml
+                const bounds = track.getBounds();
+                map.fitBounds(bounds);
+            });
+//draw bus
         for (i = 0; i < bus_location_json.length; i++) {
             //没有acc状态代表没在运行
             if (bus_location_json[i].speed >= 0) {
