@@ -77,16 +77,18 @@
     function draw_map(bus_location_json) {
 
 
-        var map = L.map('map').setView([22.600759, 113.999548], 15);
+        var map = L.map('map').setView([22.602265, 113.994955], 16);
 
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
+        //Wkikmedia maps tile
+
+        L.tileLayer('https://maps.cra.moe/osm-intl/{z}/{x}/{y}@2x.png', {
+ //           maxZoom: 20,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1
+                'BUS Data SUSTech CSOffice</a>',
+//            id: 'mapbox/light-v9',
+//            tileSize: 512,
+//            zoomOffset: -1
         }).addTo(map);
 
         //custom icon
@@ -141,7 +143,7 @@
         function onMapClick(e) {
             popup
                 .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng.toString())
+                .setContent("Your Location: " + e.latlng.toString())
                 .openOn(map);
         }
 
