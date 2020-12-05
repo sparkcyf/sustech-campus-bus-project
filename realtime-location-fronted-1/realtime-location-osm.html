@@ -149,8 +149,7 @@
                 map.fitBounds(bounds);
             });
 //draw bus
-        for (i = 0; i < bus_location_json.length; i++) {
-            //没有acc状态代表没在运行
+             //没有acc状态代表没在运行
             if (bus_location_json[i].speed >= 0) {
                 if (parseInt(bus_location_json[i].acc) === 1) {
                     L.marker([bus_location_json[i].lat, bus_location_json[i].lng], {
