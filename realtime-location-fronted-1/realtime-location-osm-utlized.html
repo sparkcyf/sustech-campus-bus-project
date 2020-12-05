@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <style type="text/css">
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script src="https://cdn.bootcss.com/proj4js/2.4.3/proj4.js"></script>
+    <script src="https://cdn.bootcss.com/proj4leaflet/1.0.1/proj4leaflet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.chinesetmsproviders@1.0.22/src/leaflet.ChineseTmsProviders.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/windycom/leaflet-kml@master/L.KML.js"
+            crossorigin="anonymous"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mapbox/mapbox-gl-leaflet@master/leaflet-mapbox-gl.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+</head>
+
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    #map {
+        width: 600px;
+        height: 400px;
+    }
+</style>
+
+<style>body {
+    padding: 0;
+    margin: 0;
+}
+
+#map {
+    height: 100%;
+    width: 100vw;
+}</style>
+</head>
+<body onload="getjson()">
+<div id='map'></div>
+<script type="text/javascript">
+    //LUT
+    var lut_up = [{"lng":113.9914749,"lat":22.59955786,"time":0},{"lng":113.9912055,"lat":22.59939844,"time":0.067114094},{"lng":113.9908711,"lat":22.59922736,"time":2.120418848},{"lng":113.9904389,"lat":22.59885562,"time":10.75772358},{"lng":113.9903585,"lat":22.59831848,"time":23.65022422},{"lng":113.9903035,"lat":22.59785235,"time":34.34343434},{"lng":113.9902711,"lat":22.59741755,"time":43.06747405},{"lng":113.9904258,"lat":22.59706632,"time":57.4875502},{"lng":113.9908518,"lat":22.59701034,"time":73.07783019},{"lng":113.9912182,"lat":22.59710358,"time":78.87804878},{"lng":113.9914776,"lat":22.59716248,"time":84.83152174},{"lng":113.9916894,"lat":22.59722741,"time":86.90707965},{"lng":113.9919824,"lat":22.59722185,"time":94.27341772},{"lng":113.9923054,"lat":22.5970751,"time":109.9122172},{"lng":113.9925837,"lat":22.59683473,"time":123.434903},{"lng":113.9928561,"lat":22.59659663,"time":129.8711485},{"lng":113.9932192,"lat":22.59628522,"time":139.7558685},{"lng":113.993527,"lat":22.59611911,"time":146.5477941},{"lng":113.9938278,"lat":22.5960393,"time":149.4477612},{"lng":113.9940805,"lat":22.59602087,"time":158.4456522},{"lng":113.9942697,"lat":22.59602714,"time":161.4266917},{"lng":113.9944997,"lat":22.5956491,"time":173.8967552},{"lng":113.9946523,"lat":22.59556507,"time":175.8795812},{"lng":113.9949081,"lat":22.59569588,"time":203.0332512},{"lng":113.9954429,"lat":22.59596725,"time":219.9373178},{"lng":113.9958625,"lat":22.59647536,"time":230.284141},{"lng":113.9961553,"lat":22.59684001,"time":239.6322418},{"lng":113.9965089,"lat":22.59723212,"time":248.7924528},{"lng":113.9967628,"lat":22.59753192,"time":257.7001795},{"lng":113.9970752,"lat":22.59792172,"time":268.0157658},{"lng":113.9973983,"lat":22.59828207,"time":277.8338558},{"lng":113.9976236,"lat":22.59851551,"time":280.600823},{"lng":113.9978421,"lat":22.59877015,"time":288.078853},{"lng":113.9981028,"lat":22.59904572,"time":291.016129},{"lng":113.9984657,"lat":22.5993188,"time":301.3128834},{"lng":113.9987847,"lat":22.59953544,"time":310.3884892},{"lng":113.9990293,"lat":22.5996833,"time":314.5509642},{"lng":113.9993834,"lat":22.59989149,"time":381.084372},{"lng":113.999652,"lat":22.60000981,"time":341.91},{"lng":113.9994109,"lat":22.60023733,"time":347.8},{"lng":113.9991048,"lat":22.60049322,"time":355.8195876},{"lng":113.9989378,"lat":22.60068406,"time":379.6990741},{"lng":113.998796,"lat":22.60093843,"time":364.6632302},{"lng":113.9987769,"lat":22.60120179,"time":377.6113537},{"lng":113.9986465,"lat":22.60160305,"time":375.4708738},{"lng":113.9983151,"lat":22.60199021,"time":400.2728094},{"lng":113.9981294,"lat":22.60242496,"time":408.8061798},{"lng":113.9980182,"lat":22.60277813,"time":414.0972222},{"lng":113.9980355,"lat":22.6030522,"time":420.136612},{"lng":113.9978102,"lat":22.60332515,"time":446.9674981},{"lng":113.9971483,"lat":22.60309374,"time":458.4185567},{"lng":113.9965488,"lat":22.60294242,"time":468.5521822},{"lng":113.99593,"lat":22.60292984,"time":492.3737113},{"lng":113.9955091,"lat":22.60295307,"time":510.8647959},{"lng":113.9952087,"lat":22.60321746,"time":550.9353933},{"lng":113.9949067,"lat":22.6035658,"time":500.235023},{"lng":113.9944632,"lat":22.60402142,"time":512.4294606},{"lng":113.9940431,"lat":22.60442427,"time":525.480663},{"lng":113.9937427,"lat":22.60499081,"time":554.3393863},{"lng":113.9934575,"lat":22.60544717,"time":594.0407303},{"lng":113.9941026,"lat":22.60578557,"time":584.698556},{"lng":113.9947875,"lat":22.60617207,"time":589.6966019},{"lng":113.9950897,"lat":22.60629424,"time":600.4917492},{"lng":113.9954398,"lat":22.60636795,"time":607.0983607},{"lng":113.9957593,"lat":22.60635654,"time":610.9781931},{"lng":113.9960684,"lat":22.60629506,"time":617.0042918},{"lng":113.9963576,"lat":22.60617961,"time":629.8385965},{"lng":113.9965966,"lat":22.60609417,"time":630.6625514},{"lng":113.9968455,"lat":22.60600347,"time":656.2777778},{"lng":113.9970904,"lat":22.60590845,"time":636.8854167},{"lng":113.9973432,"lat":22.60582048,"time":656.35},{"lng":113.9975402,"lat":22.60579415,"time":653.6732026},{"lng":113.9977363,"lat":22.60576007,"time":696.0209424},{"lng":113.9979351,"lat":22.60582864,"time":654.4550562},{"lng":113.9981416,"lat":22.60589484,"time":667.7797619},{"lng":113.9982781,"lat":22.60600939,"time":684.1844495},{"lng":113.9979312,"lat":22.60599618,"time":703.6510264},{"lng":113.9975512,"lat":22.60596774,"time":706.6636637},{"lng":113.9974087,"lat":22.60602403,"time":711.3434343},{"lng":113.9972415,"lat":22.60608226,"time":725.5726496},{"lng":113.9970945,"lat":22.60613472,"time":721.2542373},{"lng":113.9968836,"lat":22.60620376,"time":737.9520661},{"lng":113.996671,"lat":22.60628856,"time":735.8163265},{"lng":113.9964943,"lat":22.60636632,"time":739.7142857},{"lng":113.9962868,"lat":22.6064538,"time":762.8041237},{"lng":113.9960097,"lat":22.60653886,"time":749.3039648},{"lng":113.9957875,"lat":22.60659272,"time":748.32},{"lng":113.9955854,"lat":22.60665036,"time":761.7730496},{"lng":113.995454,"lat":22.60666921,"time":768.3676471},{"lng":113.9953263,"lat":22.60669736,"time":764.9139344},{"lng":113.9952167,"lat":22.60652874,"time":779.7022613},{"lng":113.9954398,"lat":22.60636795,"time":786.0622222},{"lng":113.9957593,"lat":22.60635654,"time":803.3873016},{"lng":113.9960684,"lat":22.60629506,"time":799.3981043},{"lng":113.9963576,"lat":22.60617961,"time":812.521875},{"lng":113.9965966,"lat":22.60609417,"time":813.5746606},{"lng":113.9968455,"lat":22.60600347,"time":821.6681034},{"lng":113.9970904,"lat":22.60590845,"time":811},{"lng":113.9973432,"lat":22.60582048,"time":837.0849673},{"lng":113.9975402,"lat":22.60579415,"time":827.4469274},{"lng":113.9977363,"lat":22.60576007,"time":831.5240964},{"lng":113.9979351,"lat":22.60582864,"time":837.3515152},{"lng":113.9981416,"lat":22.60589484,"time":849.080292},{"lng":113.9984768,"lat":22.60616688,"time":857.5434343},{"lng":113.9986405,"lat":22.60651465,"time":872.4543011},{"lng":113.9987266,"lat":22.60694086,"time":878.1343284},{"lng":113.9987733,"lat":22.60727477,"time":883.4217687},{"lng":113.9988204,"lat":22.60761969,"time":889.0174672},{"lng":113.9988436,"lat":22.60784558,"time":894.103139},{"lng":113.9988915,"lat":22.6081607,"time":903.0764331},{"lng":113.9986528,"lat":22.608555,"time":911.4119497},{"lng":113.9985,"lat":22.60891117,"time":913.512},{"lng":113.9983506,"lat":22.60929609,"time":919.1097923},{"lng":113.9982429,"lat":22.60958832,"time":940.3571429},{"lng":113.9980771,"lat":22.6098603,"time":935.2229885},{"lng":113.9978755,"lat":22.61014649,"time":942.6646154},{"lng":113.9977015,"lat":22.6104876,"time":966.3279743},{"lng":113.9974637,"lat":22.61068064,"time":995.6631274}]
+    var lut_down = [{"lng":113.9914749,"lat":22.59955786,"time":810.614841},{"lng":113.9912055,"lat":22.59939844,"time":812.3514212},{"lng":113.9908711,"lat":22.59922736,"time":803.3541247},{"lng":113.9904389,"lat":22.59885562,"time":793.1259398},{"lng":113.9903585,"lat":22.59831848,"time":781.3837209},{"lng":113.9903035,"lat":22.59785235,"time":765.9835355},{"lng":113.9902711,"lat":22.59741755,"time":746.7776119},{"lng":113.9904258,"lat":22.59706632,"time":744.8907104},{"lng":113.9908518,"lat":22.59701034,"time":733.6959459},{"lng":113.9912182,"lat":22.59710358,"time":728.2954545},{"lng":113.9914776,"lat":22.59716248,"time":722.8571429},{"lng":113.9916894,"lat":22.59722741,"time":719.3256705},{"lng":113.9919824,"lat":22.59722185,"time":715.8844086},{"lng":113.9923054,"lat":22.5970751,"time":706.8282675},{"lng":113.9925837,"lat":22.59683473,"time":690.1478599},{"lng":113.9928561,"lat":22.59659663,"time":687.7068966},{"lng":113.9932192,"lat":22.59628522,"time":665.5600907},{"lng":113.993527,"lat":22.59611911,"time":658.6862745},{"lng":113.9938278,"lat":22.5960393,"time":661.6958763},{"lng":113.9940805,"lat":22.59602087,"time":659.2},{"lng":113.9942697,"lat":22.59602714,"time":649.5396825},{"lng":113.9944997,"lat":22.5956491,"time":650.0296347},{"lng":113.9946523,"lat":22.59556507,"time":619.6518219},{"lng":113.9949081,"lat":22.59569588,"time":607.7968338},{"lng":113.9954429,"lat":22.59596725,"time":597.2169811},{"lng":113.9958625,"lat":22.59647536,"time":588.8043478},{"lng":113.9961553,"lat":22.59684001,"time":576.9037975},{"lng":113.9965089,"lat":22.59723212,"time":570.0987395},{"lng":113.9967628,"lat":22.59753192,"time":559.9913644},{"lng":113.9970752,"lat":22.59792172,"time":551.1673913},{"lng":113.9973983,"lat":22.59828207,"time":543.1536313},{"lng":113.9976236,"lat":22.59851551,"time":533.0265152},{"lng":113.9978421,"lat":22.59877015,"time":533.3881579},{"lng":113.9981028,"lat":22.59904572,"time":524.4360465},{"lng":113.9984657,"lat":22.5993188,"time":520.910299},{"lng":113.9987847,"lat":22.59953544,"time":510.1911263},{"lng":113.9990293,"lat":22.5996833,"time":509.2520325},{"lng":113.9993834,"lat":22.59989149,"time":501.8294798},{"lng":113.999652,"lat":22.60000981,"time":477.3041958},{"lng":113.9994109,"lat":22.60023733,"time":471.6313869},{"lng":113.9991048,"lat":22.60049322,"time":468.0884956},{"lng":113.9989378,"lat":22.60068406,"time":455.3063973},{"lng":113.998796,"lat":22.60093843,"time":457.4143426},{"lng":113.9987769,"lat":22.60120179,"time":450.5519713},{"lng":113.9986465,"lat":22.60160305,"time":444.7725118},{"lng":113.9983151,"lat":22.60199021,"time":431.6267361},{"lng":113.9981294,"lat":22.60242496,"time":419.3134328},{"lng":113.9980182,"lat":22.60277813,"time":405.4244604},{"lng":113.9980355,"lat":22.6030522,"time":392.0383693},{"lng":113.9978102,"lat":22.60332515,"time":383.2678843},{"lng":113.9971483,"lat":22.60309374,"time":365.540636},{"lng":113.9965488,"lat":22.60294242,"time":355.4886792},{"lng":113.99593,"lat":22.60292984,"time":344.7826087},{"lng":113.9955091,"lat":22.60295307,"time":326.80625},{"lng":113.9952087,"lat":22.60321746,"time":320.7424242},{"lng":113.9949067,"lat":22.6035658,"time":313.8891353},{"lng":113.9944632,"lat":22.60402142,"time":305.7900763},{"lng":113.9940431,"lat":22.60442427,"time":281.4916031},{"lng":113.9937427,"lat":22.60499081,"time":260.4593023},{"lng":113.9934575,"lat":22.60544717,"time":248.1203814},{"lng":113.9941026,"lat":22.60578557,"time":234.5844595},{"lng":113.9947797,"lat":22.60616591,"time":223.1326733},{"lng":113.9951626,"lat":22.60630154,"time":213.5089059},{"lng":113.9952364,"lat":22.60652455,"time":198.7572254},{"lng":113.9952802,"lat":22.60670644,"time":181.0681115},{"lng":113.9957766,"lat":22.60661826,"time":169.2144112},{"lng":113.9964603,"lat":22.60638666,"time":159.0473186},{"lng":113.9970586,"lat":22.60615207,"time":138.7452532},{"lng":113.9974999,"lat":22.60597842,"time":127.0841424},{"lng":113.9977283,"lat":22.6059051,"time":121.7613293},{"lng":113.9981135,"lat":22.60601293,"time":113.061008},{"lng":113.9982948,"lat":22.60601263,"time":88.36029412},{"lng":113.998529,"lat":22.60629192,"time":79.17102138},{"lng":113.9986841,"lat":22.60672242,"time":70.82978723},{"lng":113.9987733,"lat":22.60727477,"time":64.54597701},{"lng":113.9988204,"lat":22.60761969,"time":56.04358974},{"lng":113.9988436,"lat":22.60784558,"time":51.99264706},{"lng":113.9988915,"lat":22.6081607,"time":44.78187919},{"lng":113.9986528,"lat":22.608555,"time":36.4747191},{"lng":113.9985,"lat":22.60891117,"time":29.23076923},{"lng":113.9983506,"lat":22.60929609,"time":22.20901639},{"lng":113.9982429,"lat":22.60958832,"time":16.18995633},{"lng":113.9980771,"lat":22.6098603,"time":10.0630137},{"lng":113.9978755,"lat":22.61014649,"time":7.211309524},{"lng":113.9977015,"lat":22.6104876,"time":0.141509434},{"lng":113.9974637,"lat":22.61068064,"time":0.583333333}]
+    var my_location_lat = 22.595673
+    var my_location_lng = 113.994575
+
+
+    //get json from url
+    var bus_location_json;
+
+    function getjson() {
+        $.getJSON("https://bus.sustcra.com/api/v1/bus/timetable/", function (data) {
+            bus_location_json = data;
+            dataReady();
+        });
+    }
+
+    function dataReady() {
+        draw_map(bus_location_json);
+    }
+
+
+    //draw map
+
+    function draw_map(bus_location_json) {
+
+
+        var map = L.map('map').setView([22.602265, 113.994955], 16);
+
+        //Wkikmedia maps tile
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://windytiles.mapy.cz/turist-en/{z}-{x}-{y}.png
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe
+
+        L.tileLayer('https://maps2.cra.moe/maps/streets/{z}/{x}/{y}@2x.png?key=iN1z1bnMdds2aQkYFIpe', {
+ //           maxZoom: 20,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Bus data: SUSTech CS Office</a>',
+            tileSize: 512,
+            zoomOffset: -1,
+            crossOrigin: true
+//            id: 'mapbox/light-v9',
+//            tileSize: 512,
+//            zoomOffset: -1
+        }).addTo(map);
+
+        //custom icon
+        var bus_icon = L.icon({
+            iconUrl: 'bus-icon.png',
+            //     shadowUrl: 'leaf-shadow.png',
+
+            iconSize: [15, 30], // size of the icon
+            //       shadowSize:   [50, 64], // size of the shadow
+            iconAnchor: [10, 30], // point of the icon which will correspond to marker's location
+            //       shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [-3, -30] // point from which the popup should open relative to the iconAnchor
+        });
+    //location
+        map.locate({setView: true, maxZoom: 20});
+
+        function onLocationFound(e) {
+            var radius = e.accuracy;
+
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("Your location. Accuracy: " + radius).openPopup();
+
+            L.circle(e.latlng, radius).addTo(map);
+        }
+
+        map.on('locationfound', onLocationFound);
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        map.on('locationerror', onLocationError);
+        //draw bus route
+        // Load kml file
+        fetch('bus-route.kml')
+            .then(res => res.text())
+            .then(kmltext => {
+                // Create new kml overlay
+                const parser = new DOMParser();
+                const kml = parser.parseFromString(kmltext, 'text/xml');
+                const track = new L.KML(kml);
+                map.addLayer(track);
+
+                // Adjust map to show the kml
+                const bounds = track.getBounds();
+                map.fitBounds(bounds);
+            });
+//draw bus
+        for (i = 0; i < bus_location_json.length; i++) {
+            //没有acc状态代表没在运行
+            if (bus_location_json[i].tag > 0) {
+                if (true) {
+
+                    //lut
+                    //if-up
+                    if (parseInt(bus_location_json[i].direction) === 1){
+                        var minDistance = 10000000;
+                        var closest_time;
+                        for (j = 0; j < lut_up.length; j++) {
+                            point =
+                            distance = Math.sqrt((lut_up[j].lat - my_location_lat) * (lut_up[j].lat - my_location_lat) +
+                                (lut_up[j].lng - my_location_lng) * (lut_up[j].lng - my_location_lng));
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closest_time = lut_up[j].time;
+                            }
+                        }
+
+                    }
+                    if (parseInt(bus_location_json[i].direction) === 2){
+                        var minDistance = 10000000;
+                        var closest_time;
+                        for (j = 0; j < lut_down.length; j++) {
+                            point =
+                                distance = Math.sqrt((lut_down[j].lat - my_location_lat) * (lut_down[j].lat - my_location_lat) +
+                                    (lut_down[j].lng - my_location_lng) * (lut_down[j].lng - my_location_lng));
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closest_time = lut_down[j].time;
+                            }
+                        }
+                    }
+                    console.log(parseInt(bus_location_json[i].direction))
+
+
+
+
+                    console.log(closest_time)
+                    //process2
+                    var date = new Date(0);
+                    date.setSeconds(bus_location_json[i].depart_time); // specify value for SECONDS here
+                    var timeString = date.toISOString().substr(11, 8);
+                    var peak = 'NORMAL'
+                    if(bus_location_json[i].peak === 1) {
+                        peak = 'PEAK'
+                    }
+                    var eta = parseInt(closest_time) - bus_location_json[i].depart_seconds
+
+
+                    //mark
+                    L.marker([bus_location_json[i].lat, bus_location_json[i].lng], {
+                        icon: bus_icon,
+                        rotationAngle: (bus_location_json[i].course)
+                    }).addTo(map).bindPopup('The IMEI is ' + bus_location_json[i].imei + '<br>' +
+                        'The Departure time of the bus is ' + timeString + '.<br>' +
+                        'The type of line is ' + peak + '.<br>' +
+                        'Its ETA is <b>' + eta + '</b> seconds.');
+                }
+
+            }
+        }
+
+
+        var popup = L.popup();
+
+        //click map and show location
+
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("Your Location: " + e.latlng.toString())
+                .openOn(map);
+        }
+
+
+        map.on('click', onMapClick);
+
+    }
+
+</script>
+</body>
+</html>

@@ -29,6 +29,9 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/windycom/leaflet-kml@master/L.KML.js"
             crossorigin="anonymous"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mapbox/mapbox-gl-leaflet@master/leaflet-mapbox-gl.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 </head>
 
@@ -84,11 +87,17 @@
         //Wkikmedia maps tile
         //https://maps.cra.moe/{z}/{x}/{y}.png
         //https://windytiles.mapy.cz/turist-en/{z}-{x}-{y}.png
-        L.tileLayer('https://maps.cra.moe/{z}/{x}/{y}.png', {
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe
+
+        L.tileLayer('https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe', {
  //           maxZoom: 20,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Bus data: SUSTech CS Office</a>',
+            tileSize: 512,
+            zoomOffset: -1,
+            crossOrigin: true
 //            id: 'mapbox/light-v9',
 //            tileSize: 512,
 //            zoomOffset: -1
