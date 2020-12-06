@@ -785,7 +785,7 @@
         //draw bus
         for (i = 0; i < bus_location_json.length; i++) {
             //没有acc状态代表没在运行
-            if (bus_location_json[i].tag > 0) {
+            if (bus_location_json[i].tag > 0  && bus_location_json[i].depart_seconds < 1500) {
                 if (true) {
 
                     //lut
