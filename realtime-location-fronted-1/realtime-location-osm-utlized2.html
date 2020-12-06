@@ -102,6 +102,9 @@
                     html += "<option value=" + j + ">" + obj[j].station + "</option>"
                 }
                 document.getElementById("select_box").innerHTML = html;
+                $("#select_box").change(function () {
+                    reload_data();
+                });
             </script>
         </div>
         <button class="btn btn-primary" id="refresh" onclick="reload_data();">Refresh</button>
