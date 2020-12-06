@@ -104,8 +104,7 @@
                 document.getElementById("select_box").innerHTML = html;
             </script>
         </div>
-        <input class="btn btn-primary" id="refresh" onclick="reload_data();" type="button" value="Refresh"/>
-
+        <button class="btn btn-primary" id="refresh" onclick="reload_data();">Refresh</button>
     </div>
 
 </div>
@@ -647,9 +646,13 @@
     var bus_location_json;
 
     function reload_data() {
-        selector = document.getElementById("select_box").value;
+        set_input_btn(10);
+        let obj_select = document.getElementById("select_box")
+        let selector = obj_select.value;
 
-        console.log(selector)
+        console.log('select_box index %s, %s', selector, obj_select.options[obj_select.value].text)
+        let datetime = "LastSync: " + new Date().toLocaleString();
+        console.log(datetime)
         //clean old markers
         markers.clearLayers()
         getjson_bare()
@@ -658,8 +661,6 @@
         my_location_lat = sta_list.features[selector].geometry.coordinates[1]
         my_location_lng = sta_list.features[selector].geometry.coordinates[0]
         add_marker(map)
-
-
     }
 
     function getjson() {
@@ -785,7 +786,7 @@
         //draw bus
         for (i = 0; i < bus_location_json.length; i++) {
             //没有acc状态代表没在运行
-            if (bus_location_json[i].tag > 0  && bus_location_json[i].depart_seconds < 1500) {
+            if (bus_location_json[i].tag > 0 && bus_location_json[i].depart_seconds < 1500) {
                 if (true) {
 
                     //lut
@@ -886,7 +887,28 @@
 
     }
 
+    function set_input_btn(sec) {
+        let input_obj = $("#refresh");
+        input_obj.data("left_time", sec);
+        let btn_string = "Refresh (" + sec + "s)"
+        document.getElementById("refresh").innerHTML = btn_string;
+    }
 
+    set_input_btn(10);
+
+    function count_time() {
+        let input_obj = $("#refresh");
+        let left_time = input_obj.data("left_time");
+        // console.log("left_time " + left_time);
+        if (left_time <= 0) {
+            reload_data();
+            // reload_data 包含重设时间
+        } else {
+            set_input_btn(left_time - 1);
+        }
+    }
+
+    setInterval(count_time, 1000);
 </script>
 
 </html>
