@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <title>SUSTech BUS ROUTE PREDICTION</title>
+    <title>NEXT BUS in SUSTech</title>
     <meta charset="utf-8">
-
+    <meta property="og:title" content="SUSTech NEXT BUSk" />
+    <meta property="og:image" content="https://i.loli.net/2020/12/06/6x3rAC2zdMefTO5.jpg" />
     <link href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
 
@@ -76,7 +77,7 @@
 <div class="upper">
     <div class="row justify-content-center">
         <div id="title-banner">
-            <p>SUSTech BUS ROUTE PREDICTION</p>
+            <p>NEXT BUS in SUSTech</p>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -789,7 +790,7 @@
         //draw bus
         for (i = 0; i < bus_location_json.length; i++) {
             //没有acc状态代表没在运行
-            if (bus_location_json[i].tag > 0 && bus_location_json[i].depart_seconds < 1250) {
+            if (bus_location_json[i].tag > 0 && bus_location_json[i].depart_seconds < 1500) {
                 if (true) {
 
                     //lut
