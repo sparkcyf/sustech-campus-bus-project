@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SUSTech BUS ROUTE PREDICTION</title>
+    <meta charset="utf-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script src="https://cdn.bootcss.com/proj4js/2.4.3/proj4.js"></script>
+    <script src="https://cdn.bootcss.com/proj4leaflet/1.0.1/proj4leaflet.min.js"></script>
+    <script crossorigin="anonymous"
+            src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script crossorigin="anonymous"
+            src="https://cdn.jsdelivr.net/npm/leaflet.chinesetmsproviders@1.0.22/src/leaflet.ChineseTmsProviders.js"></script>
+    <script crossorigin="anonymous"
+            src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"></script>
+    <script crossorigin="anonymous"
+            src="https://cdn.jsdelivr.net/gh/windycom/leaflet-kml@master/L.KML.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet'/>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mapbox/mapbox-gl-leaflet@master/leaflet-mapbox-gl.js"></script>
+
+    <script crossorigin="anonymous"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/js/src/dropdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css"
+          rel="stylesheet">
+
+    <!-- Latest compiled and minified JavaScript -->
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+</head>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .upper {
+        width: 100vw;
+        padding-top: 0.3rem;
+        padding-bottom: 0.5rem;
+    }
+
+    #title-banner p {
+        /*width: 50%;*/
+        /*height: 10%;*/
+        /*left: 0px;*/
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+    }
+
+    #select_box_warp {
+        /*width: 50%;*/
+        /*height: 10%;*/
+        /*position: absolute;*/
+        /*right: 0px;*/
+    }
+
+    #map {
+        height: 65%;
+        width: 100vw;
+    }
+
+    .lower {
+        width: 100vw;
+        height: 25%;
+    }
+</style>
+
+<body onload="getjson()">
+<div class="upper">
+    <div class="row justify-content-center">
+        <div id="title-banner">
+            <p>SUSTech BUS ROUTE PREDICTION</p>
+        </div>
+        </div>
+    <div class="row justify-content-center">
+        <div id="select_box_warp">
+            <script>$('select').selectpicker();</script>
+            <select class="selectpicker" id="select_box" name="datas"></select>
+            <script>
+                let html = "";
+                obj = [{"index": 0, "station": "Research Buildings"}, {"index": 1, "station": "Gate 7"}, {
+                    "index": 2,
+                    "station": "Administration Building"
+                }, {"index": 3, "station": "Gate 1"}, {"index": 4, "station": "Gate 3"}, {
+                    "index": 5,
+                    "station": "Guest Houses"
+                }, {"index": 6, "station": "Faculty Cafeteria"}, {
+                    "index": 7,
+                    "station": "Community Health Service"
+                }, {"index": 8, "station": "Student Dormitories"}, {"index": 9, "station": "Lychee Hills"}, {
+                    "index": 10,
+                    "station": "Hui Yuan"
+                }, {"index": 11, "station": "Chuang Yuan"}, {"index": 12, "station": "Joy Highland"}]
+                for (let j = 0; j < obj.length; j++) {
+                    html += "<option value=" + j + ">" + obj[j].station + "</option>"
+                }
+                document.getElementById("select_box").innerHTML = html;
+            </script>
+        </div>
+        <input class="btn btn-primary" id="refresh" onclick="reload_data();" type="button" value="Refresh"/>
+
+    </div>
+
+</div>
+<div id='map'></div>
+<div class="lower">
+    <style>
+        table {
+            /*table-layout: fixed;*/
+            /*word-break: break-all;*/
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #2bb7b3;
+            color: #fff;
+        }
+    </style>
+    <table class="table table-striped">
+        <tr class="bg-info">
+            <th>IMEI</th>
+            <th>Direction</th>
+            <th>Dept Time</th>
+            <th>P/N</th>
+            <th>ETA</th>
+        </tr>
+
+        <tbody id="myTable">
+
+        </tbody>
+    </table>
+
+
+</div>
+
+
+</body>
+<script type="text/javascript">
+
+    //LUT
+    var lut_up = [{"lng": 113.9914749, "lat": 22.59955786, "time": 0}, {
+        "lng": 113.9912055,
+        "lat": 22.59939844,
+        "time": 0.067114094
+    }, {"lng": 113.9908711, "lat": 22.59922736, "time": 2.120418848}, {
+        "lng": 113.9904389,
+        "lat": 22.59885562,
+        "time": 10.75772358
+    }, {"lng": 113.9903585, "lat": 22.59831848, "time": 23.65022422}, {
+        "lng": 113.9903035,
+        "lat": 22.59785235,
+        "time": 34.34343434
+    }, {"lng": 113.9902711, "lat": 22.59741755, "time": 43.06747405}, {
+        "lng": 113.9904258,
+        "lat": 22.59706632,
+        "time": 57.4875502
+    }, {"lng": 113.9908518, "lat": 22.59701034, "time": 73.07783019}, {
+        "lng": 113.9912182,
+        "lat": 22.59710358,
+        "time": 78.87804878
+    }, {"lng": 113.9914776, "lat": 22.59716248, "time": 84.83152174}, {
+        "lng": 113.9916894,
+        "lat": 22.59722741,
+        "time": 86.90707965
+    }, {"lng": 113.9919824, "lat": 22.59722185, "time": 94.27341772}, {
+        "lng": 113.9923054,
+        "lat": 22.5970751,
+        "time": 109.9122172
+    }, {"lng": 113.9925837, "lat": 22.59683473, "time": 123.434903}, {
+        "lng": 113.9928561,
+        "lat": 22.59659663,
+        "time": 129.8711485
+    }, {"lng": 113.9932192, "lat": 22.59628522, "time": 139.7558685}, {
+        "lng": 113.993527,
+        "lat": 22.59611911,
+        "time": 146.5477941
+    }, {"lng": 113.9938278, "lat": 22.5960393, "time": 149.4477612}, {
+        "lng": 113.9940805,
+        "lat": 22.59602087,
+        "time": 158.4456522
+    }, {"lng": 113.9942697, "lat": 22.59602714, "time": 161.4266917}, {
+        "lng": 113.9944997,
+        "lat": 22.5956491,
+        "time": 173.8967552
+    }, {"lng": 113.9946523, "lat": 22.59556507, "time": 175.8795812}, {
+        "lng": 113.9949081,
+        "lat": 22.59569588,
+        "time": 203.0332512
+    }, {"lng": 113.9954429, "lat": 22.59596725, "time": 219.9373178}, {
+        "lng": 113.9958625,
+        "lat": 22.59647536,
+        "time": 230.284141
+    }, {"lng": 113.9961553, "lat": 22.59684001, "time": 239.6322418}, {
+        "lng": 113.9965089,
+        "lat": 22.59723212,
+        "time": 248.7924528
+    }, {"lng": 113.9967628, "lat": 22.59753192, "time": 257.7001795}, {
+        "lng": 113.9970752,
+        "lat": 22.59792172,
+        "time": 268.0157658
+    }, {"lng": 113.9973983, "lat": 22.59828207, "time": 277.8338558}, {
+        "lng": 113.9976236,
+        "lat": 22.59851551,
+        "time": 280.600823
+    }, {"lng": 113.9978421, "lat": 22.59877015, "time": 288.078853}, {
+        "lng": 113.9981028,
+        "lat": 22.59904572,
+        "time": 291.016129
+    }, {"lng": 113.9984657, "lat": 22.5993188, "time": 301.3128834}, {
+        "lng": 113.9987847,
+        "lat": 22.59953544,
+        "time": 310.3884892
+    }, {"lng": 113.9990293, "lat": 22.5996833, "time": 314.5509642}, {
+        "lng": 113.9993834,
+        "lat": 22.59989149,
+        "time": 381.084372
+    }, {"lng": 113.999652, "lat": 22.60000981, "time": 341.91}, {
+        "lng": 113.9994109,
+        "lat": 22.60023733,
+        "time": 347.8
+    }, {"lng": 113.9991048, "lat": 22.60049322, "time": 355.8195876}, {
+        "lng": 113.9989378,
+        "lat": 22.60068406,
+        "time": 379.6990741
+    }, {"lng": 113.998796, "lat": 22.60093843, "time": 364.6632302}, {
+        "lng": 113.9987769,
+        "lat": 22.60120179,
+        "time": 377.6113537
+    }, {"lng": 113.9986465, "lat": 22.60160305, "time": 375.4708738}, {
+        "lng": 113.9983151,
+        "lat": 22.60199021,
+        "time": 400.2728094
+    }, {"lng": 113.9981294, "lat": 22.60242496, "time": 408.8061798}, {
+        "lng": 113.9980182,
+        "lat": 22.60277813,
+        "time": 414.0972222
+    }, {"lng": 113.9980355, "lat": 22.6030522, "time": 420.136612}, {
+        "lng": 113.9978102,
+        "lat": 22.60332515,
+        "time": 446.9674981
+    }, {"lng": 113.9971483, "lat": 22.60309374, "time": 458.4185567}, {
+        "lng": 113.9965488,
+        "lat": 22.60294242,
+        "time": 468.5521822
+    }, {"lng": 113.99593, "lat": 22.60292984, "time": 492.3737113}, {
+        "lng": 113.9955091,
+        "lat": 22.60295307,
+        "time": 510.8647959
+    }, {"lng": 113.9952087, "lat": 22.60321746, "time": 550.9353933}, {
+        "lng": 113.9949067,
+        "lat": 22.6035658,
+        "time": 500.235023
+    }, {"lng": 113.9944632, "lat": 22.60402142, "time": 512.4294606}, {
+        "lng": 113.9940431,
+        "lat": 22.60442427,
+        "time": 525.480663
+    }, {"lng": 113.9937427, "lat": 22.60499081, "time": 554.3393863}, {
+        "lng": 113.9934575,
+        "lat": 22.60544717,
+        "time": 594.0407303
+    }, {"lng": 113.9941026, "lat": 22.60578557, "time": 584.698556}, {
+        "lng": 113.9947875,
+        "lat": 22.60617207,
+        "time": 589.6966019
+    }, {"lng": 113.9950897, "lat": 22.60629424, "time": 600.4917492}, {
+        "lng": 113.9954398,
+        "lat": 22.60636795,
+        "time": 607.0983607
+    }, {"lng": 113.9957593, "lat": 22.60635654, "time": 610.9781931}, {
+        "lng": 113.9960684,
+        "lat": 22.60629506,
+        "time": 617.0042918
+    }, {"lng": 113.9963576, "lat": 22.60617961, "time": 629.8385965}, {
+        "lng": 113.9965966,
+        "lat": 22.60609417,
+        "time": 630.6625514
+    }, {"lng": 113.9968455, "lat": 22.60600347, "time": 656.2777778}, {
+        "lng": 113.9970904,
+        "lat": 22.60590845,
+        "time": 636.8854167
+    }, {"lng": 113.9973432, "lat": 22.60582048, "time": 656.35}, {
+        "lng": 113.9975402,
+        "lat": 22.60579415,
+        "time": 653.6732026
+    }, {"lng": 113.9977363, "lat": 22.60576007, "time": 696.0209424}, {
+        "lng": 113.9979351,
+        "lat": 22.60582864,
+        "time": 654.4550562
+    }, {"lng": 113.9981416, "lat": 22.60589484, "time": 667.7797619}, {
+        "lng": 113.9982781,
+        "lat": 22.60600939,
+        "time": 684.1844495
+    }, {"lng": 113.9979312, "lat": 22.60599618, "time": 703.6510264}, {
+        "lng": 113.9975512,
+        "lat": 22.60596774,
+        "time": 706.6636637
+    }, {"lng": 113.9974087, "lat": 22.60602403, "time": 711.3434343}, {
+        "lng": 113.9972415,
+        "lat": 22.60608226,
+        "time": 725.5726496
+    }, {"lng": 113.9970945, "lat": 22.60613472, "time": 721.2542373}, {
+        "lng": 113.9968836,
+        "lat": 22.60620376,
+        "time": 737.9520661
+    }, {"lng": 113.996671, "lat": 22.60628856, "time": 735.8163265}, {
+        "lng": 113.9964943,
+        "lat": 22.60636632,
+        "time": 739.7142857
+    }, {"lng": 113.9962868, "lat": 22.6064538, "time": 762.8041237}, {
+        "lng": 113.9960097,
+        "lat": 22.60653886,
+        "time": 749.3039648
+    }, {"lng": 113.9957875, "lat": 22.60659272, "time": 748.32}, {
+        "lng": 113.9955854,
+        "lat": 22.60665036,
+        "time": 761.7730496
+    }, {"lng": 113.995454, "lat": 22.60666921, "time": 768.3676471}, {
+        "lng": 113.9953263,
+        "lat": 22.60669736,
+        "time": 764.9139344
+    }, {"lng": 113.9952167, "lat": 22.60652874, "time": 779.7022613}, {
+        "lng": 113.9954398,
+        "lat": 22.60636795,
+        "time": 786.0622222
+    }, {"lng": 113.9957593, "lat": 22.60635654, "time": 803.3873016}, {
+        "lng": 113.9960684,
+        "lat": 22.60629506,
+        "time": 799.3981043
+    }, {"lng": 113.9963576, "lat": 22.60617961, "time": 812.521875}, {
+        "lng": 113.9965966,
+        "lat": 22.60609417,
+        "time": 813.5746606
+    }, {"lng": 113.9968455, "lat": 22.60600347, "time": 821.6681034}, {
+        "lng": 113.9970904,
+        "lat": 22.60590845,
+        "time": 811
+    }, {"lng": 113.9973432, "lat": 22.60582048, "time": 837.0849673}, {
+        "lng": 113.9975402,
+        "lat": 22.60579415,
+        "time": 827.4469274
+    }, {"lng": 113.9977363, "lat": 22.60576007, "time": 831.5240964}, {
+        "lng": 113.9979351,
+        "lat": 22.60582864,
+        "time": 837.3515152
+    }, {"lng": 113.9981416, "lat": 22.60589484, "time": 849.080292}, {
+        "lng": 113.9984768,
+        "lat": 22.60616688,
+        "time": 857.5434343
+    }, {"lng": 113.9986405, "lat": 22.60651465, "time": 872.4543011}, {
+        "lng": 113.9987266,
+        "lat": 22.60694086,
+        "time": 878.1343284
+    }, {"lng": 113.9987733, "lat": 22.60727477, "time": 883.4217687}, {
+        "lng": 113.9988204,
+        "lat": 22.60761969,
+        "time": 889.0174672
+    }, {"lng": 113.9988436, "lat": 22.60784558, "time": 894.103139}, {
+        "lng": 113.9988915,
+        "lat": 22.6081607,
+        "time": 903.0764331
+    }, {"lng": 113.9986528, "lat": 22.608555, "time": 911.4119497}, {
+        "lng": 113.9985,
+        "lat": 22.60891117,
+        "time": 913.512
+    }, {"lng": 113.9983506, "lat": 22.60929609, "time": 919.1097923}, {
+        "lng": 113.9982429,
+        "lat": 22.60958832,
+        "time": 940.3571429
+    }, {"lng": 113.9980771, "lat": 22.6098603, "time": 935.2229885}, {
+        "lng": 113.9978755,
+        "lat": 22.61014649,
+        "time": 942.6646154
+    }, {"lng": 113.9977015, "lat": 22.6104876, "time": 966.3279743}, {
+        "lng": 113.9974637,
+        "lat": 22.61068064,
+        "time": 995.6631274
+    }]
+    var lut_down = [{"lng": 113.9977015, "lat": 22.6104876, "time": 0.141509434}, {
+        "lng": 113.9974637,
+        "lat": 22.61068064,
+        "time": 0.583333333
+    }, {"lng": 113.9978755, "lat": 22.61014649, "time": 7.211309524}, {
+        "lng": 113.9980771,
+        "lat": 22.6098603,
+        "time": 10.0630137
+    }, {"lng": 113.9982429, "lat": 22.60958832, "time": 16.18995633}, {
+        "lng": 113.9983506,
+        "lat": 22.60929609,
+        "time": 22.20901639
+    }, {"lng": 113.9985, "lat": 22.60891117, "time": 29.23076923}, {
+        "lng": 113.9986528,
+        "lat": 22.608555,
+        "time": 36.4747191
+    }, {"lng": 113.9988915, "lat": 22.6081607, "time": 44.78187919}, {
+        "lng": 113.9988436,
+        "lat": 22.60784558,
+        "time": 51.99264706
+    }, {"lng": 113.9988204, "lat": 22.60761969, "time": 56.04358974}, {
+        "lng": 113.9987733,
+        "lat": 22.60727477,
+        "time": 64.54597701
+    }, {"lng": 113.9986841, "lat": 22.60672242, "time": 70.82978723}, {
+        "lng": 113.998529,
+        "lat": 22.60629192,
+        "time": 79.17102138
+    }, {"lng": 113.9982948, "lat": 22.60601263, "time": 88.36029412}, {
+        "lng": 113.9981135,
+        "lat": 22.60601293,
+        "time": 113.061008
+    }, {"lng": 113.9977283, "lat": 22.6059051, "time": 121.7613293}, {
+        "lng": 113.9974999,
+        "lat": 22.60597842,
+        "time": 127.0841424
+    }, {"lng": 113.9970586, "lat": 22.60615207, "time": 138.7452532}, {
+        "lng": 113.9964603,
+        "lat": 22.60638666,
+        "time": 159.0473186
+    }, {"lng": 113.9957766, "lat": 22.60661826, "time": 169.2144112}, {
+        "lng": 113.9952802,
+        "lat": 22.60670644,
+        "time": 181.0681115
+    }, {"lng": 113.9952364, "lat": 22.60652455, "time": 198.7572254}, {
+        "lng": 113.9951626,
+        "lat": 22.60630154,
+        "time": 213.5089059
+    }, {"lng": 113.9947797, "lat": 22.60616591, "time": 223.1326733}, {
+        "lng": 113.9941026,
+        "lat": 22.60578557,
+        "time": 234.5844595
+    }, {"lng": 113.9934575, "lat": 22.60544717, "time": 248.1203814}, {
+        "lng": 113.9937427,
+        "lat": 22.60499081,
+        "time": 260.4593023
+    }, {"lng": 113.9940431, "lat": 22.60442427, "time": 281.4916031}, {
+        "lng": 113.9944632,
+        "lat": 22.60402142,
+        "time": 305.7900763
+    }, {"lng": 113.9949067, "lat": 22.6035658, "time": 313.8891353}, {
+        "lng": 113.9952087,
+        "lat": 22.60321746,
+        "time": 320.7424242
+    }, {"lng": 113.9955091, "lat": 22.60295307, "time": 326.80625}, {
+        "lng": 113.99593,
+        "lat": 22.60292984,
+        "time": 344.7826087
+    }, {"lng": 113.9965488, "lat": 22.60294242, "time": 355.4886792}, {
+        "lng": 113.9971483,
+        "lat": 22.60309374,
+        "time": 365.540636
+    }, {"lng": 113.9978102, "lat": 22.60332515, "time": 383.2678843}, {
+        "lng": 113.9980355,
+        "lat": 22.6030522,
+        "time": 392.0383693
+    }, {"lng": 113.9980182, "lat": 22.60277813, "time": 405.4244604}, {
+        "lng": 113.9981294,
+        "lat": 22.60242496,
+        "time": 419.3134328
+    }, {"lng": 113.9983151, "lat": 22.60199021, "time": 431.6267361}, {
+        "lng": 113.9986465,
+        "lat": 22.60160305,
+        "time": 444.7725118
+    }, {"lng": 113.9987769, "lat": 22.60120179, "time": 450.5519713}, {
+        "lng": 113.9989378,
+        "lat": 22.60068406,
+        "time": 455.3063973
+    }, {"lng": 113.998796, "lat": 22.60093843, "time": 457.4143426}, {
+        "lng": 113.9991048,
+        "lat": 22.60049322,
+        "time": 468.0884956
+    }, {"lng": 113.9994109, "lat": 22.60023733, "time": 471.6313869}, {
+        "lng": 113.999652,
+        "lat": 22.60000981,
+        "time": 477.3041958
+    }, {"lng": 113.9993834, "lat": 22.59989149, "time": 501.8294798}, {
+        "lng": 113.9990293,
+        "lat": 22.5996833,
+        "time": 509.2520325
+    }, {"lng": 113.9987847, "lat": 22.59953544, "time": 510.1911263}, {
+        "lng": 113.9984657,
+        "lat": 22.5993188,
+        "time": 520.910299
+    }, {"lng": 113.9981028, "lat": 22.59904572, "time": 524.4360465}, {
+        "lng": 113.9976236,
+        "lat": 22.59851551,
+        "time": 533.0265152
+    }, {"lng": 113.9978421, "lat": 22.59877015, "time": 533.3881579}, {
+        "lng": 113.9973983,
+        "lat": 22.59828207,
+        "time": 543.1536313
+    }, {"lng": 113.9970752, "lat": 22.59792172, "time": 551.1673913}, {
+        "lng": 113.9967628,
+        "lat": 22.59753192,
+        "time": 559.9913644
+    }, {"lng": 113.9965089, "lat": 22.59723212, "time": 570.0987395}, {
+        "lng": 113.9961553,
+        "lat": 22.59684001,
+        "time": 576.9037975
+    }, {"lng": 113.9958625, "lat": 22.59647536, "time": 588.8043478}, {
+        "lng": 113.9954429,
+        "lat": 22.59596725,
+        "time": 597.2169811
+    }, {"lng": 113.9949081, "lat": 22.59569588, "time": 607.7968338}, {
+        "lng": 113.9946523,
+        "lat": 22.59556507,
+        "time": 619.6518219
+    }, {"lng": 113.9942697, "lat": 22.59602714, "time": 649.5396825}, {
+        "lng": 113.9944997,
+        "lat": 22.5956491,
+        "time": 650.0296347
+    }, {"lng": 113.993527, "lat": 22.59611911, "time": 658.6862745}, {
+        "lng": 113.9940805,
+        "lat": 22.59602087,
+        "time": 659.2
+    }, {"lng": 113.9938278, "lat": 22.5960393, "time": 661.6958763}, {
+        "lng": 113.9932192,
+        "lat": 22.59628522,
+        "time": 665.5600907
+    }, {"lng": 113.9928561, "lat": 22.59659663, "time": 687.7068966}, {
+        "lng": 113.9925837,
+        "lat": 22.59683473,
+        "time": 690.1478599
+    }, {"lng": 113.9923054, "lat": 22.5970751, "time": 706.8282675}, {
+        "lng": 113.9919824,
+        "lat": 22.59722185,
+        "time": 715.8844086
+    }, {"lng": 113.9916894, "lat": 22.59722741, "time": 719.3256705}, {
+        "lng": 113.9914776,
+        "lat": 22.59716248,
+        "time": 722.8571429
+    }, {"lng": 113.9912182, "lat": 22.59710358, "time": 728.2954545}, {
+        "lng": 113.9908518,
+        "lat": 22.59701034,
+        "time": 733.6959459
+    }, {"lng": 113.9904258, "lat": 22.59706632, "time": 744.8907104}, {
+        "lng": 113.9902711,
+        "lat": 22.59741755,
+        "time": 746.7776119
+    }, {"lng": 113.9903035, "lat": 22.59785235, "time": 765.9835355}, {
+        "lng": 113.9903585,
+        "lat": 22.59831848,
+        "time": 781.3837209
+    }, {"lng": 113.9904389, "lat": 22.59885562, "time": 793.1259398}, {
+        "lng": 113.9908711,
+        "lat": 22.59922736,
+        "time": 803.3541247
+    }, {"lng": 113.9914749, "lat": 22.59955786, "time": 810.614841}, {
+        "lng": 113.9912055,
+        "lat": 22.59939844,
+        "time": 812.3514212
+    }]
+    var sta_list = {
+        "type": "FeatureCollection", "features": [
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.991377733171, 22.5994799569459]},
+                "properties": {"name": "RSB"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.990310760865, 22.5972480359112]},
+                "properties": {"name": "GA7"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.992400103542, 22.5970025761836]},
+                "properties": {"name": "ADM"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.994665610607, 22.5955676895082]},
+                "properties": {"name": "GA1"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.999388152926, 22.5998960667254]},
+                "properties": {"name": "GA3"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.998278659239, 22.6020542158172]},
+                "properties": {"name": "FAP"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.997800179861, 22.6033015567418]},
+                "properties": {"name": "FCT"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.995946037115, 22.6029236568338]},
+                "properties": {"name": "CHC"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.993883675843, 22.604701221863]},
+                "properties": {"name": "SDT"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.995257958842, 22.6066014018715]},
+                "properties": {"name": "LHH"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.996931806273, 22.6062294635061]},
+                "properties": {"name": "CYU"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.998391019764, 22.6060676165008]},
+                "properties": {"name": "HYU"}
+            },
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [113.997479253205, 22.6105609095881]},
+                "properties": {"name": "JHL"}
+            }
+        ]
+    }
+    var route_geojson = {
+        "type": "FeatureCollection", "features": [
+            {
+                "type": "Feature", "geometry": {
+                    "type": "LineString",
+                    "coordinates": [[113.991474905071, 22.5995578639097, 0], [113.99120548565, 22.5993984442423, 0], [113.990871111373, 22.5992273583025, 0], [113.990438868542, 22.5988556202153, 0], [113.99035854976, 22.5983184780662, 0], [113.990303493128, 22.597852353438, 0], [113.990271122991, 22.5974175475434, 0], [113.990425827457, 22.5970663177642, 0], [113.99085177206, 22.5970103428823, 0], [113.991218154094, 22.5971035764697, 0], [113.991477615589, 22.5971624791277, 0], [113.991689350913, 22.5972274068443, 0], [113.99198242738, 22.5972218479079, 0], [113.992305377769, 22.5970751001672, 0], [113.992583721421, 22.5968347284597, 0], [113.992856148846, 22.5965966333275, 0], [113.993219208091, 22.5962852164537, 0], [113.993526964364, 22.5961191075337, 0], [113.993827831042, 22.596039301559, 0], [113.99408046156, 22.5960208695522, 0], [113.994269739751, 22.5960271393208, 0], [113.994499679455, 22.5956490984755, 0], [113.994652289657, 22.5955650670575, 0], [113.994908103167, 22.5956958820479, 0], [113.995442863651, 22.5959672524098, 0], [113.995862524707, 22.5964753625872, 0], [113.996155331924, 22.5968400089816, 0], [113.996508905698, 22.5972321193261, 0], [113.996762810774, 22.5975319248626, 0], [113.99707520964, 22.5979217220742, 0], [113.99739827277, 22.5982820655105, 0], [113.997623626077, 22.5985155079414, 0], [113.997842067804, 22.598770149162, 0], [113.998102848729, 22.5990457211399, 0], [113.998465703124, 22.5993188035995, 0], [113.998784737022, 22.599535440221, 0], [113.999029309757, 22.5996833022418, 0], [113.999383415556, 22.5998914944798, 0], [113.999652017481, 22.6000098063961, 0], [113.999410925116, 22.6002373320928, 0], [113.999104809902, 22.600493221791, 0], [113.998937777688, 22.6006840644765, 0], [113.998796001197, 22.6009384291598, 0], [113.998776854973, 22.6012017929467, 0], [113.99864650783, 22.6016030523502, 0], [113.998315106153, 22.6019902058158, 0], [113.998129350408, 22.6024249619495, 0], [113.998018208685, 22.60277812686, 0], [113.998035535549, 22.6030522036165, 0], [113.997810190998, 22.6033251501689, 0], [113.997148302384, 22.603093735691, 0], [113.996548834678, 22.6029424155087, 0], [113.995929987698, 22.6029298378861, 0], [113.995509076352, 22.602953071226, 0], [113.995208733913, 22.6032174588879, 0], [113.994906676935, 22.603565797586, 0], [113.994463205616, 22.6040214237258, 0], [113.99404307991, 22.6044242709475, 0], [113.993742699677, 22.6049908103233, 0], [113.99345753339, 22.6054471667278, 0], [113.99410264537, 22.605785572167, 0], [113.994779724329, 22.6061659083821, 0], [113.995162622914, 22.6063015426974, 0], [113.995236382676, 22.6065245505898, 0], [113.995280185276, 22.6067064372239, 0], [113.995776639282, 22.6066182615105, 0], [113.996460302673, 22.6063866567717, 0], [113.997058597569, 22.6061520656827, 0], [113.997499869837, 22.6059784179845, 0], [113.997728308405, 22.6059051029878, 0], [113.998113538609, 22.6060129324337, 0], [113.998294754175, 22.6060126290703, 0], [113.998528950335, 22.6062919245772, 0], [113.99868406298, 22.6067224224212, 0], [113.998773343783, 22.6072747716093, 0], [113.998820377309, 22.6076196914398, 0], [113.998843576084, 22.6078455764574, 0], [113.998891483055, 22.6081606961109, 0], [113.99865284819, 22.6085549994136, 0], [113.998499955313, 22.6089111685076, 0], [113.998350628838, 22.6092960893901, 0], [113.998242850779, 22.6095883166435, 0], [113.998077085842, 22.6098602980525, 0], [113.997875477003, 22.610146491032, 0], [113.997701529791, 22.6104875954142, 0], [113.997463728329, 22.610680644227, 0]]
+                }, "properties": {"name": "ctrl-point-downhill", "tessellate": true}
+            }
+        ]
+    }
+
+    var my_location_lat = 22.5994799569459
+    var my_location_lng = 113.991377733171
+
+
+    //get json from url
+    var bus_location_json;
+
+    function reload_data() {
+        selector = document.getElementById("select_box").value;
+
+        console.log(selector)
+        //clean old markers
+        markers.clearLayers()
+        getjson_bare()
+        markers.clearLayers()
+        //update my location
+        my_location_lat = sta_list.features[selector].geometry.coordinates[1]
+        my_location_lng = sta_list.features[selector].geometry.coordinates[0]
+        add_marker(map)
+
+
+    }
+
+    function getjson() {
+        $.getJSON("https://bus.sustcra.com/api/v1/bus/timetable/", function (data) {
+            bus_location_json = data;
+            dataReady();
+
+        });
+    }
+
+    function getjson_bare() {
+        $.getJSON("https://bus.sustcra.com/api/v1/bus/timetable/", function (data) {
+            bus_location_json = data;
+        });
+    }
+
+    function dataReady() {
+        draw_map(bus_location_json);
+    }
+
+
+    //draw map
+    //markers group
+    var markers = new L.FeatureGroup();
+    var map = L.map('map').setView([22.602265, 113.994955], 16);
+
+    //
+    function draw_map(bus_location_json) {
+
+        var selector = document.getElementById("select_box").value;
+
+
+        //Wkikmedia maps tile
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://windytiles.mapy.cz/turist-en/{z}-{x}-{y}.png
+        //https://maps.cra.moe/{z}/{x}/{y}.png
+        //https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe
+
+
+        L.tileLayer('https://maps2.cra.moe/maps/streets/{z}/{x}/{y}@2x.png?key=iN1z1bnMdds2aQkYFIpe', {
+            //           maxZoom: 20,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Bus data: SUSTech CS Office</a>',
+            tileSize: 512,
+            zoomOffset: -1,
+            crossOrigin: true
+//            id: 'mapbox/light-v9',
+//            tileSize: 512,
+//            zoomOffset: -1
+        }).addTo(map);
+
+        // var gl = L.mapboxGL({
+        //     style: 'https://api.maptiler.com/maps/streets/style.json?key=iN1z1bnMdds2aQkYFIpe'
+        // }).addTo(map);
+
+        //custom icon
+        //location
+        // map.locate({setView: true, maxZoom: 20});
+        //
+        // function onLocationFound(e) {
+        //     var radius = e.accuracy;
+        //
+        //     L.marker(e.latlng).addTo(map)
+        //         .bindPopup("Your location. Accuracy: " + radius).openPopup();
+        //
+        //     L.circle(e.latlng, radius).addTo(map);
+        // }
+        //
+        // map.on('locationfound', onLocationFound);
+        //
+        // function onLocationError(e) {
+        //     alert(e.message);
+        // }
+        //
+        // map.on('locationerror', onLocationError);
+        add_marker(map)
+    }
+
+    function add_marker(map) {
+
+        var bus_icon = L.icon({
+            iconUrl: 'bus-top-view.svg',
+            //     shadowUrl: 'leaf-shadow.png',
+
+            iconSize: [48, 36], // size of the icon
+            //       shadowSize:   [50, 64], // size of the shadow
+            iconAnchor: [24, 18], // point of the icon which will correspond to marker's location
+            //       shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [-3, -30] // point from which the popup should open relative to the iconAnchor
+        });
+
+        //provide closest time
+        L.geoJSON(route_geojson).addTo(map)
+        var minDistance = 10000000;
+        var closest_time_up;
+        for (j = 0; j < lut_up.length; j++) {
+            point =
+                distance = Math.sqrt((lut_up[j].lat - my_location_lat) * (lut_up[j].lat - my_location_lat) +
+                    (lut_up[j].lng - my_location_lng) * (lut_up[j].lng - my_location_lng));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest_time_up = lut_up[j].time;
+            }
+        }
+
+
+        var minDistance = 10000000;
+        var closest_time_down;
+        for (j = 0; j < lut_down.length; j++) {
+            point =
+                distance = Math.sqrt((lut_down[j].lat - my_location_lat) * (lut_down[j].lat - my_location_lat) +
+                    (lut_down[j].lng - my_location_lng) * (lut_down[j].lng - my_location_lng));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest_time_down = lut_down[j].time;
+
+            }
+        }
+
+
+        document.getElementById('myTable').innerHTML = ''
+        //draw bus
+        for (i = 0; i < bus_location_json.length; i++) {
+            //没有acc状态代表没在运行
+            if (bus_location_json[i].tag > 0) {
+                if (true) {
+
+                    //lut
+                    //if-up
+
+
+                    //process2
+                    var date = new Date(0);
+                    date.setSeconds(bus_location_json[i].depart_time); // specify value for SECONDS here
+                    var timeString = date.toISOString().substr(11, 8);
+                    var peak = 'N'
+                    if (parseInt(bus_location_json[i].peak === 1)) {
+                        peak = 'P'
+                    }
+                    var eta
+                    var direction
+                    if (parseInt(bus_location_json[i].direction) === 1) {
+                        bus_lut_time = lut_up[parseInt(bus_location_json[i].ctrl_point)].time
+                        eta = parseInt(closest_time_up) - bus_lut_time
+                        direction = '🔺'
+                    }
+                    if (parseInt(bus_location_json[i].direction) === 2) {
+                        bus_lut_time = lut_down[parseInt(bus_location_json[i].ctrl_point)].time
+                        console.log('CTP_down' + bus_lut_time)
+                        eta = parseInt(closest_time_down) - bus_lut_time
+                        direction = '🔻'
+                    }
+
+
+                    //mark
+                    marker = L.marker([bus_location_json[i].lat, bus_location_json[i].lng], {
+                        icon: bus_icon,
+                        rotationAngle: (bus_location_json[i].course)
+                    })
+                    marker.bindPopup('The IMEI is ' + bus_location_json[i].imei + '<br>' +
+                        'ctrl_point is ' + bus_location_json[i].ctrl_point + '<br>' +
+                        'The Departure time of the bus is ' + timeString + '.<br>' +
+                        'The type of line is ' + peak + '.<br>' +
+                        'Its ETA is <b>' + eta + '</b> seconds.' + '<br>Direction: ' + direction);
+                    markers.addLayer(marker)
+                }
+
+                //create table
+                var table = document.getElementById('myTable')
+
+                if (eta > 0) {
+                    var row = `<tr>
+
+							<td>${bus_location_json[i].imei}</td>
+							<td>${direction}</td>
+							<td>${timeString}</td>
+							<td>${peak}</td>
+							<td>${parseInt(eta / 60) + ' min.'}</td>
+					  </tr>`
+                    table.innerHTML += row
+
+
+                }
+
+            }
+        }
+        map.addLayer(markers);
+
+
+        // var popup = L.popup();
+        //
+        // //click map and show location
+        //
+        // function onMapClick(e) {
+        //     popup
+        //         .setLatLng(e.latlng)
+        //         .setContent("Your Location: " + e.latlng.toString())
+        //         .openOn(map);
+        // }
+        //
+        //
+        // map.on('click', onMapClick);
+
+        // buildTable(bus_location_json)
+        //
+        //
+        //
+        // function buildTable(data){
+        //     var table = document.getElementById('myTable')
+        //
+        //     for (var i = 0; i < data.length; i++){
+        //         if(parseInt(bus_location_json[i].tag) === 1) {
+        //             var row = `<tr>
+        // 					<td>${data[i].gps_time}</td>
+        // 					<td>${data[i].imei}</td>
+        // 					<td>${data[i].imei}</td>
+        // 			  </tr>`
+        //             table.innerHTML += row
+        //
+        //         }
+        //     }
+        // }
+
+    }
+
+
+</script>
+
+</html>
