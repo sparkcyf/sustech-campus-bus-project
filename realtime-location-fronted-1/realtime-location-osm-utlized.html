@@ -666,6 +666,7 @@
 
         console.log(selector)
         //clean old markers
+        markers.clearLayers()
         getjson_bare()
         markers.clearLayers()
         //update my location
@@ -835,6 +836,7 @@
                         rotationAngle: (bus_location_json[i].course)
                     })
                     marker.bindPopup('The IMEI is ' + bus_location_json[i].imei + '<br>' +
+                        'ctrl_point is ' + bus_location_json[i].ctrl_point + '<br>' +
                         'The Departure time of the bus is ' + timeString + '.<br>' +
                         'The type of line is ' + peak + '.<br>' +
                         'Its ETA is <b>' + eta + '</b> seconds.' + '<br>Direction: ' + direction);
