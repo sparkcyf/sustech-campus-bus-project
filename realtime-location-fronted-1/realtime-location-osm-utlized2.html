@@ -49,20 +49,16 @@
         padding-bottom: 0.5rem;
     }
 
+    /* 不可删除，修复下拉菜单被覆盖的bug */
+    .dropdown-menu {
+        z-index: 99999;
+    }
+
     #title-banner p {
-        /*width: 50%;*/
-        /*height: 10%;*/
-        /*left: 0px;*/
         font-weight: bold;
         margin-bottom: 0.3rem;
     }
 
-    #select_box_warp {
-        /*width: 50%;*/
-        /*height: 10%;*/
-        /*position: absolute;*/
-        /*right: 0px;*/
-    }
 
     #map {
         height: 65%;
