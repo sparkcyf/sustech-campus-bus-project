@@ -68,6 +68,7 @@
     .lower {
         width: 100vw;
         height: 25%;
+        overflow-y: scroll;
     }
 </style>
 
@@ -77,7 +78,7 @@
         <div id="title-banner">
             <p>SUSTech BUS ROUTE PREDICTION</p>
         </div>
-        </div>
+    </div>
     <div class="row justify-content-center">
         <div id="select_box_warp">
             <script>$('select').selectpicker();</script>
@@ -112,25 +113,29 @@
 <div class="lower">
     <style>
         table {
-            /*table-layout: fixed;*/
-            /*word-break: break-all;*/
-            overflow: hidden;
+            table-layout: fixed;
         }
 
         th {
             background-color: #2bb7b3;
             color: #fff;
         }
+
+        td {
+            overflow-x: scroll;
+        }
+
     </style>
     <table class="table table-striped">
+        <thead>
         <tr class="bg-info">
-            <th>IMEI</th>
-            <th>Direction</th>
-            <th>Dept Time</th>
-            <th>P/N</th>
-            <th>ETA</th>
+            <th width="16%">IMEI</th>
+            <th width="21%">🔻/🔺</th>
+            <th width="29%">Dept Time</th>
+            <th width="15%">P/N</th>
+            <th width="19%">ETA</th>
         </tr>
-
+        </thead>
         <tbody id="myTable">
 
         </tbody>
