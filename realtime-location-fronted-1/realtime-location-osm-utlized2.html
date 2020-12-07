@@ -125,10 +125,42 @@
             color: #fff;
         }
 
-        td {
-            overflow-x: scroll;
+        .animate_warp {
+            overflow: hidden;
         }
 
+        .animate {
+            padding-left: 20px;
+            font-size: 12px;
+            color: #000;
+            white-space: nowrap;
+            animation: 15s wordsLoop linear infinite normal;
+            display: inline-block;
+        }
+
+        @keyframes wordsLoop {
+            0% {
+                transform: translateX(0px);
+                -webkit-transform: translateX(0px);
+            }
+
+            100% {
+                transform: translateX(-100%);
+                -webkit-transform: translateX(-100%);
+            }
+        }
+
+        @-webkit-keyframes wordsLoop {
+            0% {
+                transform: translateX(0px);
+                -webkit-transform: translateX(0px);
+            }
+
+            100% {
+                transform: translateX(-100%);
+                -webkit-transform: translateX(-100%);
+            }
+        }
     </style>
     <table class="table table-striped">
         <thead>
@@ -864,7 +896,7 @@
         var table = document.getElementById('myTable')
         for (_ti = 0; _ti < time_table.length; _ti++) {
             var row = `<tr>
-            <td>${time_table[_ti][0]}</td>
+            <td><div class="animate_warp"><div class="animate">${time_table[_ti][0]}</div></div></td>
             <td>${time_table[_ti][1]}</td>
             <td>${time_table[_ti][2]}</td>
             <td>${time_table[_ti][3]}</td>
