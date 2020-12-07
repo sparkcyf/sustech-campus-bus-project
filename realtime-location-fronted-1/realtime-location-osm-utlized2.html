@@ -4,8 +4,8 @@
 <head>
     <title>NEXT BUS in SUSTech</title>
     <meta charset="utf-8">
-    <meta property="og:title" content="SUSTech NEXT BUS" />
-    <meta property="og:image" content="https://i.loli.net/2020/12/06/6x3rAC2zdMefTO5.jpg" />
+    <meta property="og:title" content="SUSTech NEXT BUS"/>
+    <meta property="og:image" content="https://i.loli.net/2020/12/06/6x3rAC2zdMefTO5.jpg"/>
     <link href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
 
@@ -686,6 +686,13 @@
         draw_map(bus_location_json);
     }
 
+    function sortFunction(a, b) {
+        if (a[2] === b[2]) {
+            return 0;
+        } else {
+            return (a[2] < b[2]) ? -1 : 1;
+        }
+    }
 
     //draw map
     //markers group
@@ -789,6 +796,8 @@
 
         document.getElementById('myTable').innerHTML = ''
         //draw bus
+
+        let time_table = new Array();
         for (i = 0; i < bus_location_json.length; i++) {
             //没有acc状态代表没在运行
             if (bus_location_json[i].tag > 0 && bus_location_json[i].depart_seconds < 1500) {
@@ -834,24 +843,34 @@
                     markers.addLayer(marker)
                 }
 
-                //create table
-                var table = document.getElementById('myTable')
-
                 if (eta > 0) {
-                    var row = `<tr>
 
-							<td>${bus_location_json[i].imei}</td>
-							<td>${direction}</td>
-							<td>${timeString}</td>
-							<td>${peak}</td>
-							<td>${parseInt(eta / 60) + ' min.'}</td>
-					  </tr>`
-                    table.innerHTML += row
-
-
+                    let row_tmp = new Array();
+                    row_tmp.push(bus_location_json[i].imei);
+                    row_tmp.push(direction);
+                    row_tmp.push(timeString);
+                    row_tmp.push(peak);
+                    row_tmp.push(parseInt(eta / 60) + ' min.');
+                    time_table.push(row_tmp)
                 }
 
             }
+        }
+        // 按照出发时间排序
+        time_table.sort(sortFunction);
+        // console.log(time_table);
+
+        //create table
+        var table = document.getElementById('myTable')
+        for (_ti = 0; _ti < time_table.length; _ti++) {
+            var row = `<tr>
+            <td>${time_table[_ti][0]}</td>
+            <td>${time_table[_ti][1]}</td>
+            <td>${time_table[_ti][2]}</td>
+            <td>${time_table[_ti][3]}</td>
+            <td>${time_table[_ti][4]}</td>
+            </tr>`
+            table.innerHTML += row
         }
         map.addLayer(markers);
 
