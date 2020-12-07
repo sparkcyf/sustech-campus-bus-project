@@ -844,7 +844,7 @@
                     date.setSeconds(bus_location_json[i].depart_time); // specify value for SECONDS here
                     var timeString = date.toISOString().substr(11, 8);
                     var peak = 'N'
-                    if (parseInt(bus_location_json[i].peak === 1)) {
+                    if (parseInt(bus_location_json[i].peak) === 1) {
                         peak = 'P'
                     }
                     var eta
