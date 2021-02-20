@@ -1,5 +1,5 @@
 <template>
-  <div id='map' ref="map-root" style="width: 100%; height: 600px;"></div>
+  <div id='map' ref="map-root" style="width: 100%; height: 500px;"></div>
 </template>
 <div id="mapContainer"></div>
 

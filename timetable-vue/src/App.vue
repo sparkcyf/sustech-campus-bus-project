@@ -2,7 +2,7 @@
   <div>
 <!--    <BootstrapDatatable :posts="posts" />-->
 <!--    <MapContainer ref="map_container"></MapContainer>-->
-    <Map-container_leafletjs ref="map_container_leafletjs"></Map-container_leafletjs>
+    <Map-container_leafletjs ref="map_container_leafletjs" ></Map-container_leafletjs>
     <VuetifyDatatable :posts="display_data" />
 
   </div>
