@@ -6,6 +6,8 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+
+
 import "leaflet-rotatedmarker";
 export default {
 name: "MapContainer_leafletjs",
