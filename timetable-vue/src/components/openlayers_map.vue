@@ -31,7 +31,7 @@ import VectorSource from 'ol/source/Vector';
 //import View from 'ol/View';
 import {Icon, Style} from 'ol/style';
 import VectorLayer from "ol/layer/Vector";
-import {Overlay} from "ol";
+//import {Overlay} from "ol";
 //import axios from "axios";
 //import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 // import VectorLayer from 'ol/layer/Vector'
