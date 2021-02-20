@@ -15,6 +15,13 @@
               label="Select the station:"
               v-on:change="this.$parent.changestation"
           ></v-select>
+          <v-btn
+              depressed
+              color="primary"
+              v-on:click="this.$parent.refresh"
+          >
+            Refresh
+          </v-btn>
         </v-row>
         <v-row>
           <v-col md="3">
