@@ -2,11 +2,13 @@
   <v-app>
     <v-main>
       <v-container>
-        <h2>SUSTech BUS Timetable</h2>
         <v-row>
-          Where are you?
+        <h2>SUSTech Next Bus</h2>
         </v-row>
-        <v-row>
+        <v-row style="height: 10px;">
+
+        </v-row>
+        <v-row >
           <v-select
               :items="this.$parent.stations"
               item-text="name"
@@ -14,15 +16,19 @@
               outlined
               label="Select the station:"
               v-on:change="this.$parent.changestation"
+              style="width: 75%; height: 50px;"
           ></v-select>
           <v-btn
               depressed
               color="primary"
               v-on:click="this.$parent.refresh"
+              style="width: 25%; height: 50px;"
           >
-            Refresh
+            Refresh ({{this.$parent.countdown_timer}})
           </v-btn>
         </v-row>
+        <v-row style="height: 10px;"></v-row>
+        <v-row><h3>Timetable</h3></v-row>
         <v-row>
           <v-col md="3">
             <v-text-field
@@ -91,7 +97,7 @@ export default {
       { text: "BUSID", value: "imei" },
       { text: "DPT_TIME", value: "depart_time_text" },
       { text: "Type", value: "peak_text" },
-      { text: "Direction", value: "direction_text", sortable: false },
+      { text: "Direction", value: "direction_text", sortable: true },
       { text: "ETA", value: "eta_text"}
     ],
     // class: "blue lighten-5"
@@ -124,12 +130,8 @@ export default {
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
 .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
 .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
-  font-size: 30px !important;
+  font-size: 20px !important;
 }
 
-.mytable table {
-  /*background-color: black;*/
-  font-size: 50px;
-  /*border-bottom: none;*/
-}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div id='map' ref="map-root" style="width: 100%; height: 400px;"></div>
+  <div id='map' ref="map-root" style="width: 100%; height: 600px;"></div>
 </template>
 <div id="mapContainer"></div>
 
@@ -25,7 +25,7 @@ name: "MapContainer_leafletjs",
 
     this.init_marker();
     //var markers = new L.FeatureGroup();
-    this.map = L.map('map').setView([22.602265, 113.994955], 16);
+    this.map = L.map('map').setView([22.602265, 113.994955], 15);
 
     //
 
@@ -37,7 +37,7 @@ name: "MapContainer_leafletjs",
       //https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe
 
 
-      L.tileLayer('https://windytiles.mapy.cz/turist-en/{z}-{x}-{y}.png', {
+      L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}@2x.png?key=iN1z1bnMdds2aQkYFIpe', {
         //           maxZoom: 20,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
             '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
