@@ -86,16 +86,17 @@ export default {
     //this.stations = stations_remote.data;
 
 
-    this.changestatus();
+    await this.changestatus()
+    this.$refs.map_container.add_bus_to_map(this.map_display_data)
 
 
 
   },
   methods: {
-    fetchdata: function () {
-      const realtime_location_data = axios.get(`https://bus.sustcra.com/api/v1/bus/timetable/`)
+    async fetchdata() {
+      const realtime_location_data = await axios.get(`https://bus.sustcra.com/api/v1/bus/timetable/`)
       this.bus_remote2 = realtime_location_data.data;
-      this.changestatus();
+      // this.changestatus();
 
     },
     changestatus: function() {
@@ -218,11 +219,13 @@ export default {
 
       }
     },
-    changestation(sta_no) {
+    async changestation(sta_no) {
       this.sta_num_up = this.stations[sta_no].up;
       this.sta_num_down = this.stations[sta_no].down;
       console.log("numup" + this.sta_num_up + "numdown" + this.sta_num_down)
-      this.changestatus()
+      await this.fetchdata();
+      await this.changestatus();
+      //this.$refs.map_container.clean_bus()
       this.$refs.map_container.add_bus_to_map(this.map_display_data)
     }
 

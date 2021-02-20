@@ -1,7 +1,7 @@
 <template>
   <div>
     <div ref="map-root" id="map-root" style="width: 100%; height: 400px;"></div>
-    <div></div>
+    <div ref="popup" id="popup"></div>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ import VectorSource from 'ol/source/Vector';
 //import View from 'ol/View';
 import {Icon, Style} from 'ol/style';
 import VectorLayer from "ol/layer/Vector";
+import {Overlay} from "ol";
 //import axios from "axios";
 //import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 // import VectorLayer from 'ol/layer/Vector'
@@ -128,17 +129,14 @@ export default {
 
 
 
-    //add icon(bus)
-
-    //this.add_bus_to_map(this.$parent.map_display_data)
-    //
-
-    // console.log(this.map.getLayers())
+    //popup
 
 
-    //   var source = vectorLayer.getSource();
-    //   source.clear()
-    //   source.addFeatures(feature2);
+
+
+
+
+
 
 
   },
@@ -153,16 +151,21 @@ export default {
 
       console.log("init vector layer done")
     },
+    clean_bus: function (){
+      //console.log(this.vectorLayer.getSource().getFeatures())
+      var features = this.vectorLayer.getSource().getFeatures();
+      features.forEach((feature) => {
+        this.vectorLayer.getSource().removeFeature(feature);
+      });
+
+      // this.map.getLayers().getArray()
+      //     .filter(layer => layer.get('name') === 'VectorLayer')
+      //     .forEach(layer => this.map.removeLayer(layer));
+      console.log("clean done")
+    },
     add_bus_to_map: function (bus_data) {
 
-      var iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 46],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-        }),
-      });
+
       var bus_set = [];
       // var source = this.vectorLayer.getSource();
       // source.clear();
@@ -170,6 +173,17 @@ export default {
       let i;
       for (i = 0; i < bus_data.length; i++) {
         if (bus_data[i].tag === 1) {
+          var iconStyle = new Style({
+            image: new Icon({
+              // anchor: [0.01, 0],
+              // anchorXUnits: 'fraction',
+              // anchorYUnits: 'pixels',
+              src: 'https://cdn.jsdelivr.net/gh/sparkcyf/sustech-campus-bus-project@master/realtime-location-fronted-1/bus-top-view.svg',
+              scale: 0.05,
+              rotation: bus_data[i].course*(2*Math.PI)/360
+
+            }),
+          });
           var iconFeature = new Feature({
             geometry: new Point(fromLonLat([bus_data[i].lng, bus_data[i].lat])),
             name: bus_data[i].imei.toString(),
@@ -178,10 +192,19 @@ export default {
           });
           iconFeature.setStyle(iconStyle);
           bus_set.push(iconFeature);
+          //console.log(iconFeature)
+
 
         }
 
+
       }
+      //clean bus
+      this.clean_bus();
+      console.log(this.vectorLayer.getSource().getFeatures())
+      //add features
+      this.vectorLayer.getSource().addFeatures(bus_set)
+      console.log(this.vectorLayer.getSource().getFeatures())
 
 
 
@@ -193,29 +216,28 @@ export default {
 
       //this.vectorLayer.getSource().clear()
       //console.log(source)
-      var vectorSource = new VectorSource({
-        features: bus_set,
-      });
-      this.vectorLayer = new VectorLayer({
-        source: vectorSource,
-      });
+
+
+
+
+
+
       //console.log(this.vectorLayer.getSource().features)
       //source.addFeatures(vectorSource);
 
       //force delete layer
-      this.map.getLayers().getArray()
-          .filter(layer => layer.get('name') === 'VectorLayer')
-          .forEach(layer => this.map.removeLayer(layer));
-
+      // this.map.getLayers().getArray()
+      //     .filter(layer => layer.get('name') === 'VectorLayer')
+      //     .forEach(layer => this.map.removeLayer(layer));
+      // console.log("clean done")
       //update layer
 
 
       //this.vectorLayer.getSource().addFeatures(vectorSource);
       //this.vectorLayer.changed()
-      this.map.getLayers().insertAt(0, this.vectorLayer);
-      console.log(this.vectorLayer.getSource())
-      console.log(this.map.getLayers())
+      // this.map.getLayers().insertAt(0, this.vectorLayer);
       console.log("Add/Update bus done.")
+      console.log(this.map.getLayers().getArray())
     }
   }
 }
