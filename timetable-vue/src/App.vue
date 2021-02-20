@@ -1,7 +1,7 @@
 <template>
   <div>
 <!--    <BootstrapDatatable :posts="posts" />-->
-    <MapContainer></MapContainer>
+    <MapContainer ref="map_container"></MapContainer>
     <VuetifyDatatable :posts="display_data" />
   </div>
 </template>
@@ -64,7 +64,9 @@ export default {
     sta_num_up: 124,
     sta_num_down: 1,
     stations: [{"no":1,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},{"no":1,"sta":"RSB","up":9,"down":85,"name":"Research Building","name_cn":""},{"no":2,"sta":"GA7","up":15,"down":79,"name":"Gate 7","name_cn":""},{"no":3,"sta":"ADM","up":21,"down":71,"name":"Administration Building","name_cn":""},{"no":4,"sta":"GA1","up":31,"down":62,"name":"Gate 1","name_cn":""},{"no":5,"sta":"GA3","up":45,"down":48,"name":"Gate 3","name_cn":""},{"no":6,"sta":"FAP","up":53,"down":40,"name":"Guest Houses","name_cn":""},{"no":7,"sta":"FCT","up":57,"down":36,"name":"Faculty Cafeteria","name_cn":""},{"no":8,"sta":"CHC","up":60,"down":33,"name":"Community Health Service","name_cn":""},{"no":9,"sta":"SDT","up":66,"down":28,"name":"Student Dormitories","name_cn":""},{"no":10,"sta":"HYU1","up":83,"down":-1,"name":"Hui Yuan (U1)","name_cn":""},{"no":11,"sta":"LHH","up":98,"down":23,"name":"Lychee Hill","name_cn":""},{"no":12,"sta":"CYU","up":89,"down":19,"name":"Chuang Yuan","name_cn":""},{"no":13,"sta":"HYU2","up":111,"down":14,"name":"Hui Yuan (2)","name_cn":""},{"no":14,"sta":"JHL","up":124,"down":1,"name":"Joy Highland","name_cn":""}],
-    display_data: []
+    display_data: [],
+    map_display_data: []
+
 
   }),
   async created() {
@@ -83,6 +85,7 @@ export default {
     this.lut_down = lut_down_remote.data;
     //this.stations = stations_remote.data;
 
+
     this.changestatus();
 
 
@@ -96,6 +99,7 @@ export default {
 
     },
     changestatus: function() {
+
       //init
       this.display_data = [];
       //this.bus_remote2 = this.bus_remote[0]
@@ -134,11 +138,18 @@ export default {
           eta = this.lut_down[this.sta_num_down].time - this.lut_down[this.display_data[j].ctrl_point].time
         }
         this.display_data[j].eta = eta
+
       }
+
+      this.map_display_data = this.display_data
+      console.log("map_display_data defined")
+
+
 
       //add scheduled bus
       this.get_scheduled_bus(1,this.timetable_up_workday)
       this.get_scheduled_bus(2,this.timetable_down_workday)
+
 
       //delete negative time, add directions
 
@@ -188,6 +199,7 @@ export default {
           var scheduled_bus = {};
           scheduled_bus.depart_time = timetable[k].time_sec
           scheduled_bus.imei = "Not Departure Yet"
+          scheduled_bus.tag = 2
           scheduled_bus.direction = direction
           if (timetable[k].peak === 1) {
             scheduled_bus.peak_line = 1
@@ -211,6 +223,7 @@ export default {
       this.sta_num_down = this.stations[sta_no].down;
       console.log("numup" + this.sta_num_up + "numdown" + this.sta_num_down)
       this.changestatus()
+      this.$refs.map_container.add_bus_to_map(this.map_display_data)
     }
 
 
