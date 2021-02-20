@@ -1,6 +1,7 @@
 <template>
   <div>
 <!--    <BootstrapDatatable :posts="posts" />-->
+    <MapContainer></MapContainer>
     <VuetifyDatatable :posts="display_data" />
   </div>
 </template>
@@ -8,6 +9,7 @@
 <script>
 // import BootstrapDatatable from "./components/BootstrapDatatable";
 import VuetifyDatatable from "./components/VuetifyDatatable";
+import MapContainer from "./components/openlayers_map"
 import axios from 'axios';
 
 export default {
@@ -16,6 +18,7 @@ export default {
   components: {
     // BootstrapDatatable,
     VuetifyDatatable,
+    MapContainer
   },
 
 
