@@ -1,5 +1,5 @@
 <template>
-  <div id='map' ref="map-root" style="width: 100%; height: 500px;"></div>
+  <div id='map' ref="map-root" ></div>
 </template>
 <div id="mapContainer"></div>
 
@@ -39,7 +39,7 @@ name: "MapContainer_leafletjs",
       //https://maps2.cra.moe/maps/streets/{z}/{x}/{y}.png?key=iN1z1bnMdds2aQkYFIpe
 
 
-      L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}@2x.png?key=iN1z1bnMdds2aQkYFIpe', {
+      L.tileLayer('https://maps2.cra.moe/maps/streets/{z}/{x}/{y}@2x.png?key=iN1z1bnMdds2aQkYFIpe', {
         //           maxZoom: 20,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
             '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +

@@ -1,8 +1,9 @@
 <template>
   <div>
-<!--    <BootstrapDatatable :posts="posts" />-->
-<!--    <MapContainer ref="map_container"></MapContainer>-->
-    <Map-container_leafletjs ref="map_container_leafletjs" ></Map-container_leafletjs>
+    <!--    <BootstrapDatatable :posts="posts" />-->
+    <!--    <MapContainer ref="map_container"></MapContainer>-->
+    <title_bar></title_bar>
+    <Map-container_leafletjs ref="map_container_leafletjs" style="width: 100%; height: 500px;"></Map-container_leafletjs>
     <VuetifyDatatable :posts="display_data" />
 
   </div>
@@ -14,11 +15,13 @@ import VuetifyDatatable from "./components/VuetifyDatatable";
 // import MapContainer from "./components/openlayers_map"
 import axios from 'axios';
 import MapContainer_leafletjs from "./components/leafletjs_map";
+import title_bar from "@/components/title_bar";
 
 export default {
   name: "App",
 
   components: {
+    title_bar,
     VuetifyDatatable,
     // MapContainer,
     // eslint-disable-next-line vue/no-unused-components
@@ -32,7 +35,7 @@ export default {
         userId: 1,
         id: 1,
         title:
-          "114514 hen",
+            "114514 hen",
       },
       {
         userId: 1,
@@ -65,17 +68,19 @@ export default {
     lut_up: [],
     lut_down: [],
     current_seconds: 0,
-    sta_num_up: 124,
-    sta_num_down: 1,
-    stations: [{"no":1,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},{"no":1,"sta":"RSB","up":9,"down":85,"name":"Research Building","name_cn":""},{"no":2,"sta":"GA7","up":15,"down":79,"name":"Gate 7","name_cn":""},{"no":3,"sta":"ADM","up":21,"down":71,"name":"Administration Building","name_cn":""},{"no":4,"sta":"GA1","up":31,"down":62,"name":"Gate 1","name_cn":""},{"no":5,"sta":"GA3","up":45,"down":48,"name":"Gate 3","name_cn":""},{"no":6,"sta":"FAP","up":53,"down":40,"name":"Guest Houses","name_cn":""},{"no":7,"sta":"FCT","up":57,"down":36,"name":"Faculty Cafeteria","name_cn":""},{"no":8,"sta":"CHC","up":60,"down":33,"name":"Community Health Service","name_cn":""},{"no":9,"sta":"SDT","up":66,"down":28,"name":"Student Dormitories","name_cn":""},{"no":10,"sta":"HYU1","up":83,"down":-1,"name":"Hui Yuan (U1)","name_cn":""},{"no":11,"sta":"LHH","up":98,"down":23,"name":"Lychee Hill","name_cn":""},{"no":12,"sta":"CYU","up":89,"down":19,"name":"Chuang Yuan","name_cn":""},{"no":13,"sta":"HYU2","up":111,"down":14,"name":"Hui Yuan (2)","name_cn":""},{"no":14,"sta":"JHL","up":124,"down":1,"name":"Joy Highland","name_cn":""}],
+    sta_num_up: 0,
+    sta_num_down: 95,
+    stations: [{"no":0,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},{"no":1,"sta":"RSB","up":9,"down":85,"name":"Research Building","name_cn":""},{"no":2,"sta":"GA7","up":15,"down":79,"name":"Gate 7","name_cn":""},{"no":3,"sta":"ADM","up":21,"down":71,"name":"Administration Building","name_cn":""},{"no":4,"sta":"GA1","up":31,"down":62,"name":"Gate 1","name_cn":""},{"no":5,"sta":"GA3","up":45,"down":48,"name":"Gate 3","name_cn":""},{"no":6,"sta":"FAP","up":53,"down":40,"name":"Guest Houses","name_cn":""},{"no":7,"sta":"FCT","up":57,"down":36,"name":"Faculty Cafeteria","name_cn":""},{"no":8,"sta":"CHC","up":60,"down":33,"name":"Community Health Service","name_cn":""},{"no":9,"sta":"SDT","up":66,"down":28,"name":"Student Dormitories","name_cn":""},{"no":10,"sta":"HYU1","up":83,"down":-1,"name":"Hui Yuan (U1)","name_cn":""},{"no":11,"sta":"LHH","up":98,"down":23,"name":"Lychee Hill","name_cn":""},{"no":12,"sta":"CYU","up":89,"down":19,"name":"Chuang Yuan","name_cn":""},{"no":13,"sta":"HYU2","up":111,"down":14,"name":"Hui Yuan (2)","name_cn":""},{"no":14,"sta":"JHL","up":124,"down":1,"name":"Joy Highland","name_cn":""}],
     display_data: [],
     map_display_data: [],
+    query_string_sta: {"no":5,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},
     countdown_timer: 10,
     bus_direction_data: [{"no": 0, "dest": "Joy Highland"},{"no": 1, "dest": "COE"}]
 
 
   }),
   async created() {
+    await this.set_station();
 
 
     const realtime_location_data = await axios.get(`https://bus.sustcra.com/api/v1/bus/timetable/`)
@@ -90,6 +95,7 @@ export default {
     this.lut_up = lut_up_remote.data;
     this.lut_down = lut_down_remote.data;
     //this.stations = stations_remote.data;
+
 
 
     await this.changestatus()
@@ -205,6 +211,7 @@ export default {
 
 
       console.log(this.display_data)
+
     },
     get_scheduled_bus: function(direction, timetable){
       let k;
@@ -246,18 +253,51 @@ export default {
       //this.$refs.map_container.clean_bus()
       // this.$refs.map_container.add_bus_to_map(this.map_display_data)
       //leaflet
-      this.$refs.map_container_leafletjs.add_marker(this.map_display_data);
+      await this.$refs.map_container_leafletjs.add_marker(this.map_display_data);
+      this.countdown_timer = 10;
+
     },
     periodically: function () {
       if(this.countdown_timer > 0) {
         setTimeout(() => {
           this.countdown_timer -= 1
           this.periodically();
+
         }, 1000)
       } else {
         this.refresh();
         this.countdown_timer = 10;
         this.periodically();
+      }
+
+
+    },
+    async set_station() {
+      //set station by query string
+      // eslint-disable-next-line no-constant-condition
+      if (true) {
+
+
+        //console.log(this.stations)
+      let i;
+      for (i=0; i < this.stations.length; i++) {
+
+
+
+        if (this.stations[i].sta.toString() === this.$route.query.sta) {
+          //console.log(this.$route.query.sta)
+
+          this.sta_num_up = this.stations[i].up;
+          this.sta_num_down = this.stations[i].down;
+          this.query_string_sta.name = this.stations[i].name;
+          this.query_string_sta.no = this.stations[i].no;
+
+
+
+        }
+      }
+        console.log(this.query_string_sta.no)
+      //this.refresh();
       }
 
     }

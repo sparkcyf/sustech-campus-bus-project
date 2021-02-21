@@ -2,33 +2,40 @@
   <v-app>
     <v-main>
       <v-container>
-        <v-row>
-        <h2>SUSTech Next Bus</h2>
-        </v-row>
+
+<!--        <v-row>-->
+<!--        <h2>SUSTech Next Bus</h2>-->
+<!--        </v-row>-->
         <v-row style="height: 10px;">
 
         </v-row>
         <v-row >
           <v-select
+              v-model="this.$parent.query_string_sta"
               :items="this.$parent.stations"
               item-text="name"
               item-value="no"
               outlined
               label="Select the station:"
               v-on:change="this.$parent.changestation"
-              style="width: 75%; height: 50px;"
+              style="width: 70%; height: 50px;"
           ></v-select>
           <v-btn
               depressed
               color="primary"
               v-on:click="this.$parent.refresh"
-              style="width: 25%; height: 50px;"
+              style="width: 30%; height: 55px;"
           >
             Refresh ({{this.$parent.countdown_timer}})
           </v-btn>
         </v-row>
-        <v-row style="height: 10px;"></v-row>
-        <v-row><h3>Timetable</h3></v-row>
+<!--        <v-row style="height: 15px;"></v-row>-->
+
+
+
+
+
+<!--        <v-row><h2>Timetable</h2></v-row>-->
         <v-row>
           <v-col md="3">
             <v-text-field
@@ -81,6 +88,9 @@
             </v-data-table>
           </v-col>
         </v-row>
+
+
+
       </v-container>
     </v-main>
   </v-app>
@@ -130,7 +140,7 @@ export default {
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
 .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
 .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
-  font-size: 20px !important;
+  font-size: 18px !important;
 }
 
 
