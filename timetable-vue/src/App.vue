@@ -73,7 +73,7 @@ export default {
     stations: [{"no":0,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},{"no":1,"sta":"RSB","up":9,"down":85,"name":"Research Building","name_cn":""},{"no":2,"sta":"GA7","up":15,"down":79,"name":"Gate 7","name_cn":""},{"no":3,"sta":"ADM","up":21,"down":71,"name":"Administration Building","name_cn":""},{"no":4,"sta":"GA1","up":31,"down":62,"name":"Gate 1","name_cn":""},{"no":5,"sta":"GA3","up":45,"down":48,"name":"Gate 3","name_cn":""},{"no":6,"sta":"FAP","up":53,"down":40,"name":"Guest Houses","name_cn":""},{"no":7,"sta":"FCT","up":57,"down":36,"name":"Faculty Cafeteria","name_cn":""},{"no":8,"sta":"CHC","up":60,"down":33,"name":"Community Health Service","name_cn":""},{"no":9,"sta":"SDT","up":66,"down":28,"name":"Student Dormitories","name_cn":""},{"no":10,"sta":"HYU1","up":83,"down":-1,"name":"Hui Yuan (U1)","name_cn":""},{"no":11,"sta":"LHH","up":98,"down":23,"name":"Lychee Hill","name_cn":""},{"no":12,"sta":"CYU","up":89,"down":19,"name":"Chuang Yuan","name_cn":""},{"no":13,"sta":"HYU2","up":111,"down":14,"name":"Hui Yuan (2)","name_cn":""},{"no":14,"sta":"JHL","up":124,"down":1,"name":"Joy Highland","name_cn":""}],
     display_data: [],
     map_display_data: [],
-    query_string_sta: {"no":5,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},
+    query_string_sta: {"no":0,"sta":"COE","up":0,"down":95,"name":"College of Engineering","name_cn":""},
     countdown_timer: 10,
     bus_direction_data: [{"no": 0, "dest": "Joy Highland"},{"no": 1, "dest": "COE"}]
 
