@@ -18,6 +18,15 @@ import MapContainer_leafletjs from "./components/leafletjs_map";
 import title_bar from "@/components/title_bar";
 
 export default {
+  metaInfo: {
+    title: 'SUSTech Next Bus',
+    titleTemplate: '%s',
+    htmlAttrs: {
+      lang: 'en',
+      amp: false
+    }
+  },
+
   name: "App",
 
   components: {

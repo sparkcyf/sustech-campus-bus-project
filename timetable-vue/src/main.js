@@ -6,6 +6,14 @@ import vuetify from '@/plugins/vuetify'
 import VueRouter from 'vue-router'
 import router from './router'
 Vue.use(VueRouter)
+
+import VueMeta from 'vue-meta'
+
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+})
+
 Vue.config.productionTip = false
 
 //import css files
