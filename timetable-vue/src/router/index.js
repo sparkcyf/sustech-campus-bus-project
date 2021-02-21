@@ -8,7 +8,24 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: App
+    component: App,
+    meta: {
+      title: 'SUSTech Next Bus',
+      metaTags: [
+        {
+          name: 'description',
+          content: 'A bus ETA prediction and timetable application.'
+        },
+        {
+          property: 'og:description',
+          content: 'A bus ETA prediction and timetable application.'
+        },
+        {
+          property: 'og:image',
+          content: 'https://i.loli.net/2020/12/06/6x3rAC2zdMefTO5.jpg'
+        }
+      ]
+    }
   },
   // {
   //   path: '/about',
