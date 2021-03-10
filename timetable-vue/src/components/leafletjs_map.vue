@@ -64,7 +64,7 @@ name: "MapContainer_leafletjs",
     methods: {
       async init_marker(){
         this.markers = await new L.FeatureGroup();
-        console.log("init marker don")
+        console.log("init marker done.")
       },
       add_marker: function (bus_data){
         //clean old markers

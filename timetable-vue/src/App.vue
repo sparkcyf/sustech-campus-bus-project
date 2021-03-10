@@ -220,6 +220,7 @@ export default {
 
 
       console.log(this.display_data)
+      //this.filter_direction()
 
     },
     get_scheduled_bus: function(direction, timetable){
@@ -284,16 +285,14 @@ export default {
     async set_station() {
       //set station by query string
       // eslint-disable-next-line no-constant-condition
-      if (true) {
+
 
 
         //console.log(this.stations)
       let i;
       for (i=0; i < this.stations.length; i++) {
 
-
-
-        if (this.stations[i].sta.toString() === this.$route.query.sta) {
+        if (this.stations[i].sta.toString() === this.$route.query.station) {
           //console.log(this.$route.query.sta)
 
           this.sta_num_up = this.stations[i].up;
@@ -301,16 +300,29 @@ export default {
           this.query_string_sta.name = this.stations[i].name;
           this.query_string_sta.no = this.stations[i].no;
 
-
-
         }
       }
-        console.log(this.query_string_sta.no)
+      //  console.log(this.query_string_sta.no)
       //this.refresh();
+
+
+    },
+    async filter_direction() {
+      console.log(this.$route.query.direction)
+      if (this.$route.query.direction >0){
+        var dir_id = [this.$route.query.direction]
+
+        var filteredArray = this.display_data.filter(function(itm){
+          return dir_id.indexOf(itm.direction) > -1;
+        });
+        filteredArray = { records : filteredArray };
+        this.display_data = filteredArray
+        }
+
       }
 
     }
-  }
+
 
 
 };

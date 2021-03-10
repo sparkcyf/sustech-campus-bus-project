@@ -30,10 +30,15 @@
           </v-btn>
         </v-row>
 <!--        <v-row style="height: 15px;"></v-row>-->
+<!--        <v-row>-->
+<!--          <v-select-->
+<!--              :items="bus_directions"-->
+<!--              label="bus_dir"-->
+<!--              @change="filterAuthor"-->
+<!--          ></v-select>-->
 
-
-
-
+<!--        </v-row>-->
+<!--https://stackoverflow.com/questions/45672145/how-do-i-use-custom-filter-prop-in-data-tables-in-vuetify-or-how-do-i-create-->
 
 <!--        <v-row><h2>Timetable</h2></v-row>-->
         <v-row>
@@ -95,6 +100,7 @@
     </v-main>
   </v-app>
 </template>
+<!--group-by="direction_text"-->
 
 <script>
 export default {
@@ -113,8 +119,15 @@ export default {
     // class: "blue lighten-5"
     selector_item: [
       'Foo', 'Bar', 'Fizz', 'Buzz'
-    ]
+    ],
+    bus_directions: ['COE', 'Joy Highland'],
   }),
+  // computed: {
+  //   filteredItems() {
+  //     return this.$parent.display_data.filter((i) => {
+  //       return !this.foodType || (i.type === this.foodType);
+  //     })
+  //   },
   methods: {
     deleteItem(item) {
       const index = this.posts.indexOf((x) => x.id === item.id);

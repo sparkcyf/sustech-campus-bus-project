@@ -9,10 +9,18 @@ Vue.use(VueRouter)
 
 import VueMeta from 'vue-meta'
 
+
+
 Vue.use(VueMeta, {
   // optional pluginOptions
   refreshOnceOnNavigation: true
 })
+
+import VueGtag from "vue-gtag";
+
+Vue.use(VueGtag, {
+  config: { id: "G-SH553PX9SX" }
+});
 
 Vue.config.productionTip = false
 
