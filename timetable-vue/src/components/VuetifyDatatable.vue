@@ -16,17 +16,17 @@
               item-text="name"
               item-value="no"
               outlined
-              label="Select the station:"
+              label="选择车站 Select the station:"
               v-on:change="this.$parent.changestation"
-              style="width: 70%; height: 50px;"
+              style="width: 60%; height: 50px;"
           ></v-select>
           <v-btn
               depressed
               color="primary"
               v-on:click="this.$parent.refresh"
-              style="width: 30%; height: 55px;"
+              style="width: 40%; height: 55px;"
           >
-            Refresh ({{this.$parent.countdown_timer}})
+            刷新 Refresh ({{this.$parent.countdown_timer}})
           </v-btn>
         </v-row>
 <!--        <v-row style="height: 15px;"></v-row>-->
@@ -110,11 +110,11 @@ export default {
     sortBy: 'eta',
     sortDesc: false,
     headers: [
-      { text: "BUSID", value: "imei" },
-      { text: "DPT_TIME", value: "depart_time_text" },
-      { text: "Type", value: "peak_text" },
-      { text: "Direction", value: "direction_text", sortable: true },
-      { text: "ETA", value: "eta_text"}
+      { text: "车牌 ID", value: "imei" },
+      { text: "发车时间 DPT_TIME", value: "depart_time_text" },
+      { text: "类型 Type", value: "peak_text" },
+      { text: "方向 Direction", value: "direction_text", sortable: true },
+      { text: "预计时间 ETA", value: "eta_text"}
     ],
     // class: "blue lighten-5"
     selector_item: [

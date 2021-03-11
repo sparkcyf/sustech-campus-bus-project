@@ -8,7 +8,7 @@
     <v-toolbar dense>
 <!--      <v-app-bar-nav-icon></v-app-bar-nav-icon>-->
 
-      <v-toolbar-title>SUSTech Next Bus</v-toolbar-title>
+      <v-toolbar-title>南科大校巴 SUSTech Next Bus</v-toolbar-title>
 
       <v-spacer></v-spacer>
 

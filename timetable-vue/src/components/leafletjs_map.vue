@@ -140,21 +140,22 @@ name: "MapContainer_leafletjs",
             // console.log(bus_data[i])
             // console.log(this.bus_data[i].peak_line)
             if (bus_data[i].peak_line === 1){
-              peak_text = "PEAK"
+              peak_text = "高峰 PEAK"
             }
             if (bus_data[i].peak_line === 0){
-              peak_text = "NORMAL"
+              peak_text = "平峰 NORMAL"
             }
             //
             // eslint-disable-next-line no-unused-vars
             let direction_text;
             if (bus_data[i].direction === 1) {
-              direction_text = "JOY HIGHLAND";
+              direction_text = "欣园 JOY HIGHLAND";
             }
             if (bus_data[i].direction === 2) {
-              direction_text = "COE";
+              direction_text = "工学院 COE";
             }
             date.setSeconds(bus_data[i].depart_time);
+            // eslint-disable-next-line no-unused-vars
             var depart_time_text = date.toISOString().substr(11, 8)
 
 
@@ -163,11 +164,11 @@ name: "MapContainer_leafletjs",
               icon: bus_icon,
               rotationAngle: (bus_data[i].course)
             })
-            marker.bindPopup('The IMEI is ' + bus_data[i].imei + '<br>' +
-                'ctrl_point is ' + bus_data[i].ctrl_point + '<br>' +
-                'The Departure time of the bus is ' + depart_time_text + '.<br>' +
-                'The type of line is ' + peak_text + '.<br>' +
-                'Its ETA is <b>' + Math.round(bus_data[i].eta) + '</b> seconds.' + '<br>Direction: ' + direction_text);
+            marker.bindPopup('车牌： ' + bus_data[i].imei + '<br>' +
+                // 'ctrl_point is ' + bus_data[i].ctrl_point + '<br>' +
+                // '发车时间： ' + depart_time_text + '.<br>' +
+                '车辆类型： ' + peak_text + '.<br>' +
+                '预计到站时间： <b>' + Math.round(bus_data[i].eta) + '</b> 秒.' + '<br>方向 ' + direction_text);
             this.markers.addLayer(marker)
             this.map.addLayer(this.markers);
           }
