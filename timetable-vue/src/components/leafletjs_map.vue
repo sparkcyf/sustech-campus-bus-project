@@ -88,14 +88,16 @@ name: "MapContainer_leafletjs",
       onEachFeature: onEachFeature,
 
       pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 5,
-          fillColor: "#ffffff",
-          color: "#002249",
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8
+        const sta_icon = L.icon({
+          iconUrl: 'https://cdn.jsdelivr.net/gh/sparkcyf/sustech-campus-bus-project@leaflet/realtime-location-fronted-1/station_icon.svg',
+          //     shadowUrl: 'leaf-shadow.png',
+          iconSize: [48, 36], // size of the icon
+          //       shadowSize:   [50, 64], // size of the shadow
+          iconAnchor: [24, 25], // point of the icon which will correspond to marker's location
+          //       shadowAnchor: [4, 62],  // the same for the shadow
+          popupAnchor: [-3, -30] // point from which the popup should open relative to the iconAnchor
         });
+        return L.marker(latlng, {icon: sta_icon});
       }
     }).addTo(this.map);
 
@@ -164,9 +166,13 @@ name: "MapContainer_leafletjs",
               icon: bus_icon,
               rotationAngle: (bus_data[i].course)
             })
-            marker.bindPopup('车牌： ' + bus_data[i].imei + '<br>' +
+            var popup_date = new Date(0);
+            popup_date.setSeconds(bus_data[i].depart_time);
+            var popup_depart_time = popup_date.toISOString().substr(11, 8)
+            marker.bindPopup(
+                // '车牌： ' + bus_data[i].imei + '<br>' +
                 // 'ctrl_point is ' + bus_data[i].ctrl_point + '<br>' +
-                // '发车时间： ' + depart_time_text + '.<br>' +
+                '发车时间： ' + popup_depart_time + '.<br>' +
                 '车辆类型： ' + peak_text + '.<br>' +
                 '预计到站时间： <b>' + Math.round(bus_data[i].eta) + '</b> 秒.' + '<br>方向 ' + direction_text);
             this.markers.addLayer(marker)

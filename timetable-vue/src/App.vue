@@ -110,6 +110,7 @@ export default {
       let i;
       for (i = 0; i < this.bus_remote2.length; i++) {
         if (this.bus_remote2[i].tag > 0 && this.bus_remote2[i].depart_seconds < 1500){
+          this.bus_remote2[i].imei = '在途中 On the way'
           // console.log(this.bus_remote2[i].imei)
           // var date = new Date(0);
           // date.setSeconds(this.bus_remote2[i].depart_time);

@@ -57,7 +57,7 @@
             <v-data-table
               :headers="headers"
               :items="posts"
-              :items-per-page="5"
+              :items-per-page="100"
               :search="search"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
@@ -112,7 +112,7 @@ export default {
     sortBy: 'eta',
     sortDesc: false,
     headers: [
-      { text: "车牌 ID", value: "imei" },
+      { text: "状态 Status", value: "imei" },
       { text: "发车时间 DPT_TIME", value: "depart_time_text" },
       { text: "类型 Type", value: "peak_text" },
       { text: "方向 Direction", value: "direction_text", sortable: true },
