@@ -62,6 +62,8 @@
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               class="elevation-1 mytable"
+              group-by="direction_text"
+              show-group-by
             >
               <template v-slot:item.actions="{ item }">
                 <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>

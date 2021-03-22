@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
 import App from '../App.vue'
+// import timetable from "../timetable";
 Vue.use(VueRouter)
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
       ]
     }
   },
+  // {
+  //   path: '/static-timetable',
+  //   name: 'Static Timetable',
+  //   component: timetable
+  // }
   // {
   //   path: '/about',
   //   name: 'About',

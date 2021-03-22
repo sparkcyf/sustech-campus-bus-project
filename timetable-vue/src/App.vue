@@ -39,38 +39,6 @@ export default {
 
 
   data: () => ({
-    posts: [
-      {
-        userId: 1,
-        id: 1,
-        title:
-            "114514 hen",
-      },
-      {
-        userId: 1,
-        id: 2,
-        title: "qui est esse",
-      },
-      {
-        userId: 1,
-        id: 3,
-        title: "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-      },
-    ],
-    bus: [
-      {
-        "imei": "866005041185986",
-        "lat": 0.0,
-        "lng": 0.0,
-        "speed": -9,
-      },
-      {
-        "imei": "866005041186018",
-        "lat": 22.610533,
-        "lng": 113.997333,
-        "speed": 0,
-      }
-    ],
     bus_remote: [],
     bus_remote2: [],
     timetable_jhl_rsb_workday: [],
@@ -82,19 +50,30 @@ export default {
     stations: [{"no":0,"sta":"COE","up":0,"down":95,"name":"工学院 College of Engineering","name_cn":""},{"no":1,"sta":"RSB","up":9,"down":85,"name":"科研楼 Research Building","name_cn":""},{"no":2,"sta":"GA7","up":15,"down":79,"name":"7号门 Gate 7","name_cn":""},{"no":3,"sta":"ADM","up":21,"down":71,"name":"行政楼 Administration Building","name_cn":""},{"no":4,"sta":"GA1","up":31,"down":62,"name":"1号门 Gate 1","name_cn":""},{"no":5,"sta":"GA3","up":45,"down":48,"name":"3号门 Gate 3","name_cn":""},{"no":6,"sta":"FAP","up":53,"down":40,"name":"专家公寓 Guest Houses","name_cn":""},{"no":7,"sta":"FCT","up":57,"down":36,"name":"教工食堂 Faculty Cafeteria","name_cn":""},{"no":8,"sta":"CHC","up":60,"down":33,"name":"社康中心 Community Health Service","name_cn":""},{"no":9,"sta":"SDT","up":66,"down":28,"name":"学生宿舍 Student Dormitory","name_cn":""},{"no":10,"sta":"HYU1","up":83,"down":14,"name":"慧园 (下) Hui Yuan (D)","name_cn":""},{"no":11,"sta":"LHH","up":98,"down":23,"name":"荔园 Lychee Hill","name_cn":""},{"no":12,"sta":"CYU","up":89,"down":19,"name":"创园 Chuang Yuan","name_cn":""},{"no":13,"sta":"HYU2","up":111,"down":14,"name":"慧园 (上) Hui Yuan (U)","name_cn":""},{"no":14,"sta":"JHL","up":124,"down":1,"name":"欣园 Joy Highland","name_cn":""}],
     display_data: [],
     map_display_data: [],
+    workday_indicator: [1],
     query_string_sta: {"no":0,"sta":"COE","up":0,"down":95,"name":"工学院 College of Engineering","name_cn":""},
     countdown_timer: 10,
     bus_direction_data: [{"no": 0, "dest": "欣园 Joy Highland"},{"no": 1, "dest": "工学院 COE"}]
-
-
   }),
   async created() {
     await this.set_station();
 
 
     const realtime_location_data = await axios.get(`https://bus.sustcra.com/api/v1/bus/timetable/`)
-    const timetable_up = await axios.get(`https://bus.sustcra.com/sample/timetable-jhl-rsb-workday.json`)
-    const timetable_down = await axios.get(`https://bus.sustcra.com/sample/timetable-rsb-jhl-workday.json`)
+    //need judge the workday/holiday
+    this.workday_indicator = await axios.get(`https://bus.sustcra.com/sample/workday.txt`).data
+    let timetable_up;
+    let timetable_down;
+    if(this.workday_indicator == 1){
+      timetable_up = await axios.get(`https://bus.sustcra.com/sample/timetable-jhl-rsb-workday.json`)
+      timetable_down = await axios.get(`https://bus.sustcra.com/sample/timetable-rsb-jhl-workday.json`)
+    } else {
+      timetable_up = await axios.get(`https://bus.sustcra.com/sample/timetable-rsb-jhl-holiday.json`)
+      timetable_down = await axios.get(`https://bus.sustcra.com/sample/timetable-jhl-rsb-holiday.json`)
+    }
+    
+
+
     const lut_up_remote = await axios.get(`https://bus.sustcra.com/sample/lut-up.json`)
     const lut_down_remote = await axios.get(`https://bus.sustcra.com/sample/lut-down.json`)
     //const stations_remote = await axios.get(`https://bus.sustcra.com/sample/stations.json`)
@@ -228,7 +207,7 @@ export default {
       let k;
       for (k = 0; k < timetable.length; k++) {
 
-        if ((timetable[k].time_sec - this.current_seconds < 1800) && (timetable[k].time_sec - this.current_seconds > 0)){
+        if ((timetable[k].time_sec - this.current_seconds < 2400) && (timetable[k].time_sec - this.current_seconds > -10)){
           //console.log("find a NYD bus" + timetable[k].time_sec)
           var scheduled_bus = {};
           scheduled_bus.depart_time = timetable[k].time_sec
