@@ -158,8 +158,8 @@ export default {
 
 
       //add scheduled bus
-      this.get_scheduled_bus(1,this.timetable_up_workday)
-      this.get_scheduled_bus(2,this.timetable_down_workday)
+      // this.get_scheduled_bus(1,this.timetable_up_workday)
+      // this.get_scheduled_bus(2,this.timetable_down_workday)
 
 
       //delete negative time, add directions

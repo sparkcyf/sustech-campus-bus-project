@@ -96,6 +96,66 @@
           </v-col>
         </v-row>
 
+        <v-row>
+          <v-alert
+              border="left"
+              colored-border
+              type="info"
+              elevation="2"
+              style="width: 98%;"
+          >
+          本页面仅显示运行中的车辆，若需查看完整时间表，请点击下方按钮查看。
+          </v-alert>
+        </v-row>
+
+        <v-row>
+          <v-btn
+              href="https://sustech.online/transport/workday.html"
+              target="_blank"
+              style="width: 50%; height: 50px;"
+
+          >
+            <v-icon left>
+              mdi-briefcase
+            </v-icon>
+            工作日
+          </v-btn>
+
+          <v-btn
+              href="https://sustech.online/transport/holiday.html"
+              target="_blank"
+              style="width: 50%;height: 50px;"
+          >
+            <v-icon left>
+              mdi-sleep
+            </v-icon>
+            节假日
+          </v-btn>
+        </v-row>
+
+
+
+        <v-row
+            style="height: 10px;"
+        >
+
+        </v-row>
+
+        <v-row>
+          <v-footer
+              padless
+              style="width: 100%;"
+          >
+            <v-col
+                class="text-center"
+                cols="12"
+
+            >
+              校园服务办公室/<a href="https://sustech.online">南科手册</a> 支持：<a href="mailto:support@mail.sustech.online?subject=校园巴士反馈">support@mail.sustech.online</a>
+            </v-col>
+          </v-footer>
+        </v-row>
+
 
 
       </v-container>
@@ -112,7 +172,7 @@ export default {
     sortBy: 'eta',
     sortDesc: false,
     headers: [
-      { text: "状态 Status", value: "imei" },
+      // { text: "状态 Status", value: "imei" },
       { text: "发车时间 DPT_TIME", value: "depart_time_text" },
       { text: "类型 Type", value: "peak_text" },
       { text: "方向 Direction", value: "direction_text", sortable: true },
