@@ -171,16 +171,16 @@ export default {
           //console.log(l)
         } else {
           if (this.display_data[l].direction === 1) {
-            this.display_data[l].direction_text = "欣园 JOY HIGHLAND";
+            this.display_data[l].direction_text = "往欣园 TO JOY HIGHLAND";
           }
           if (this.display_data[l].direction === 2) {
-            this.display_data[l].direction_text = "工学院 COE";
+            this.display_data[l].direction_text = "往工学院 TO COE";
           }
           if (this.display_data[l].peak_line === 1){
-            this.display_data[l].peak_text = "高峰 P"
+            this.display_data[l].peak_text = "高峰 PEAK"
           }
           if (this.display_data[l].peak_line === 0){
-            this.display_data[l].peak_text = "平峰 N"
+            this.display_data[l].peak_text = "平峰 NORMAL"
           }
 
           //add min to eta

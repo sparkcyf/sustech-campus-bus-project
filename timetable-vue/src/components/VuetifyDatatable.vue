@@ -16,7 +16,7 @@
               item-text="name"
               item-value="no"
               outlined
-              label="选择车站 Select the station:"
+              label="选择出发车站 Select the station:"
               v-on:change="this.$parent.changestation"
               style="width: 60%; height: 50px;"
           ></v-select>
@@ -104,7 +104,7 @@
               elevation="2"
               style="width: 98%;"
           >
-          本页面仅显示运行中的车辆，若需查看完整时间表，请点击下方按钮查看。
+          本页面仅显示运行中的车辆，若需查看完整时间表，请点击下方按钮查看。<br>This page only shows buses in operation. To view the full timetable, please click the button below.
           </v-alert>
         </v-row>
 
@@ -118,7 +118,7 @@
             <v-icon left>
               mdi-briefcase
             </v-icon>
-            工作日
+            工作日 Workday
           </v-btn>
 
           <v-btn
@@ -129,7 +129,7 @@
             <v-icon left>
               mdi-sleep
             </v-icon>
-            节假日
+            节假日 Holiday
           </v-btn>
         </v-row>
 
